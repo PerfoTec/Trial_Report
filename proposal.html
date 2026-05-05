@@ -38,7 +38,7 @@
           Utensils, Factory, ArrowDown, ArrowUp, ChevronUp, ChevronDown, 
           Bold, Italic, Underline, List, AlertTriangle, Package, PackagePlus,
           X, Edit3, Camera, FileArchive, LineChart, Globe, AlertCircle,
-          Building2, Target, Beaker, Send, Mail, ClipboardList
+          Building2, Target, Beaker, Send, Mail, ClipboardList, UserPlus
         } from 'https://esm.sh/lucide-react@0.292.0';
 
         // --- LINK WITH CONFIG.JS ---
@@ -253,17 +253,256 @@
           )
         };
 
+        // --- PRINT PREVIEW LOCALISATION ---
+        // Separate table from the editor-side `PT` because the preview surface
+        // is only ever read here. Keeping it module-scoped lets PrintPreview
+        // pull translations without prop-drilling the entire `PT` block.
+        const PV = {
+          en: {
+            // Header buttons
+            edit: 'Edit', downloadWord: 'Download Word', downloadPdf: 'Download PDF',
+            // Cover
+            defaultProposalTitle: 'Trial Proposal', productNamePlaceholder: '<Product Name>',
+            noCoverPhoto: 'No Cover Photo',
+            // Table of contents + section titles
+            tableOfContents: 'Table of Contents',
+            sec1: '1. Introduction & Objectives',
+            sec2: '2. Company & Project Info',
+            sec3: '3. Product Characteristics & Defect Prevention',
+            sec4: '4. Simulated Supply Chain',
+            sec5: '5. Proposed Trial Setup',
+            sec6: '6. Evaluation Plan',
+            sec7: '7. Requirements & Agreements',
+            // Section 1
+            currentChallengeLabel: 'Current Challenge:',
+            trialTargetLabel: 'Trial Target:',
+            expectedOutcomesLabel: 'Expected Outcomes:',
+            // Section 2
+            productLabel: 'Product :',
+            stateOfProductLabel: 'State of product :',
+            stateWhole: 'Whole', stateProcessed: 'Processed / Fresh-cut',
+            productOriginLabel: 'Product Origin :',
+            companyInfo: 'Company Info',
+            companyNameLabel: 'Company Name :',
+            addressLabel: 'Address :',
+            contactPersonLabel: 'Contact Person :',
+            contactDetailsLabel: 'Contact Details :',
+            perfoTecSupport: 'PerfoTec Support',
+            perfoTecEmployeeLabel: 'PerfoTec Employee :',
+            technologyLabel: 'Technology :',
+            // Section 3
+            o2MinAcp: 'O₂ min (ACP):', co2MaxLabel: 'CO₂ max:',
+            co2ShockLabel: 'CO₂ shock:', tempMinLabel: 'Temp min:',
+            co2ShockHintTemplate: 'Drop < {max}% within {hours}h',
+            maxFallback: 'max',
+            defectsMatrixTitle: 'Defects & Prevention Matrix',
+            matrixDefect: 'DEFECT', matrixCause: 'PHYSIOLOGICAL CAUSE',
+            matrixMHP: 'EFFECT MHP (MOISTURE)', matrixMAP: 'EFFECT MAP (GAS)',
+            // Section 4
+            supplyChainIntro: 'To ensure the trial is representative of the real-world conditions, we propose to test the product using the following temperature and time profile:',
+            transportModeLabel: 'Transport Mode:',
+            supplyChainNote: '* Temperatures and durations are simulated based on provided information.',
+            storedAtTemplate: 'Stored at {temp} for {duration} total.',
+            packedOnTemplate: 'The product was packed on {date}.',
+            unpackingMomentsNote: 'Unpacking moments are specific to each variant and are detailed in the Trial Setup table below.',
+            daysWord: 'days',
+            // Section 5
+            trialSetupIntro: 'The Fast Respiration Meter System will be used to measure the exact product respiration rate. Based on this, we calculate the optimal micro perforation pattern for the PerfoTec variant. The proposed variants to compare are:',
+            thVariant: 'Variant', thPackagingType: 'Packaging Type', thMaterial: 'Material',
+            thDimensions: 'Dimensions', thNetWeight: 'Net Weight',
+            thTransmission: 'Transmission Value', thEvalDays: 'Evaluation Days',
+            predictedGasLevels: 'Predicted Gas Levels',
+            variantFallback: 'Variant',
+            // Section 6
+            evalIntro: 'During the trial, the product quality and atmospheric conditions will be continuously monitored according to the schedule below.',
+            detailedSchedule: 'Detailed Evaluation Schedule',
+            thDay: 'Day', thMeasurements: 'Measurements (O₂, CO₂, Weight)',
+            thMeasurementsWeightOnly: 'Measurements (Weight)',
+            thOpening: 'Opening Moment', thQualityEval: 'Quality Evaluation',
+            methodology: 'Methodology',
+            methodGas: 'Gas Analysis:', methodGasDesc: 'Measuring O₂ and CO₂ percentages inside the packaging.',
+            methodWeight: 'Weight Tracking:', methodWeightDesc: 'Monitoring moisture/weight loss from Day 0.',
+            methodVisual: 'Visual Quality:', methodVisualDesc: 'Taking photographic evidence of the product state.',
+            methodQuality: 'Detailed Quality Assessment:',
+            methodQualityDesc: 'Scoring the following criteria on a 1-10 scale (where 6+ is acceptable):',
+            // Section 7
+            requiredProductTitle: 'Required Product',
+            requiredProductTemplate: 'A minimum of {weight} of fresh product is required to conduct this trial (based on a total of {samples} uniquely tracked physical samples across all variants).'
+          },
+          nl: {
+            edit: 'Bewerken', downloadWord: 'Download Word', downloadPdf: 'Download PDF',
+            defaultProposalTitle: 'Trial Voorstel', productNamePlaceholder: '<Productnaam>',
+            noCoverPhoto: 'Geen Omslagfoto',
+            tableOfContents: 'Inhoudsopgave',
+            sec1: '1. Introductie & Doelstellingen',
+            sec2: '2. Bedrijfs- & Projectgegevens',
+            sec3: '3. Producteigenschappen & Defectpreventie',
+            sec4: '4. Gesimuleerde Supply Chain',
+            sec5: '5. Voorgestelde Trial Opzet',
+            sec6: '6. Evaluatieplan',
+            sec7: '7. Vereisten & Afspraken',
+            currentChallengeLabel: 'Huidige Uitdaging:',
+            trialTargetLabel: 'Beoogd Doel:',
+            expectedOutcomesLabel: 'Verwachte Resultaten:',
+            productLabel: 'Product :',
+            stateOfProductLabel: 'Staat van het product :',
+            stateWhole: 'Heel', stateProcessed: 'Verwerkt / Gesneden',
+            productOriginLabel: 'Herkomst Product :',
+            companyInfo: 'Bedrijfsgegevens',
+            companyNameLabel: 'Bedrijfsnaam :',
+            addressLabel: 'Adres :',
+            contactPersonLabel: 'Contactpersoon :',
+            contactDetailsLabel: 'Contactgegevens :',
+            perfoTecSupport: 'PerfoTec Support',
+            perfoTecEmployeeLabel: 'PerfoTec Medewerker :',
+            technologyLabel: 'Technologie :',
+            o2MinAcp: 'O₂ min (ACP):', co2MaxLabel: 'CO₂ max:',
+            co2ShockLabel: 'CO₂ shock:', tempMinLabel: 'Temp min:',
+            co2ShockHintTemplate: 'Daling < {max}% binnen {hours}u',
+            maxFallback: 'max',
+            defectsMatrixTitle: 'Defecten & Preventiematrix',
+            matrixDefect: 'DEFECT', matrixCause: 'FYSIOLOGISCHE OORZAAK',
+            matrixMHP: 'EFFECT MHP (VOCHT)', matrixMAP: 'EFFECT MAP (GAS)',
+            supplyChainIntro: 'Om er zeker van te zijn dat de trial representatief is voor de werkelijke omstandigheden, stellen we voor het product te testen volgens het onderstaande temperatuur- en tijdprofiel:',
+            transportModeLabel: 'Transportwijze:',
+            supplyChainNote: '* Temperaturen en doorlooptijden zijn gesimuleerd op basis van de aangeleverde informatie.',
+            storedAtTemplate: 'Bewaard op {temp} gedurende {duration} in totaal.',
+            packedOnTemplate: 'Het product is verpakt op {date}.',
+            unpackingMomentsNote: 'Uitpakmomenten zijn specifiek per variant en worden weergegeven in de Trial Opzet tabel hieronder.',
+            daysWord: 'dagen',
+            trialSetupIntro: 'Het Fast Respiration Meter systeem wordt gebruikt om de exacte respiratiesnelheid van het product te meten. Op basis hiervan berekenen we het optimale micro-perforatiepatroon voor de PerfoTec-variant. De voorgestelde varianten om te vergelijken zijn:',
+            thVariant: 'Variant', thPackagingType: 'Type Verpakking', thMaterial: 'Materiaal',
+            thDimensions: 'Afmetingen', thNetWeight: 'Netto Gewicht',
+            thTransmission: 'Transmissiewaarde', thEvalDays: 'Evaluatiedagen',
+            predictedGasLevels: 'Voorspelde Gaswaarden',
+            variantFallback: 'Variant',
+            evalIntro: 'Gedurende de trial worden de productkwaliteit en de atmosferische condities continu gemonitord volgens onderstaand schema.',
+            detailedSchedule: 'Gedetailleerd Evaluatieschema',
+            thDay: 'Dag', thMeasurements: 'Metingen (O₂, CO₂, Gewicht)',
+            thMeasurementsWeightOnly: 'Metingen (Gewicht)',
+            thOpening: 'Openingsmoment', thQualityEval: 'Kwaliteitsbeoordeling',
+            methodology: 'Methodiek',
+            methodGas: 'Gasanalyse:', methodGasDesc: 'Meten van O₂- en CO₂-percentages in de verpakking.',
+            methodWeight: 'Gewichtsregistratie:', methodWeightDesc: 'Monitoring van vocht-/gewichtsverlies vanaf Dag 0.',
+            methodVisual: 'Visuele Kwaliteit:', methodVisualDesc: 'Vastleggen van fotomateriaal van de productstaat.',
+            methodQuality: 'Gedetailleerde Kwaliteitsbeoordeling:',
+            methodQualityDesc: 'Scoren van de volgende criteria op een 1-10 schaal (waarbij 6+ acceptabel is):',
+            requiredProductTitle: 'Benodigd Product',
+            requiredProductTemplate: 'Er is minimaal {weight} vers product nodig om deze trial uit te voeren (gebaseerd op in totaal {samples} uniek getraceerde fysieke monsters over alle varianten).'
+          },
+          es: {
+            edit: 'Editar', downloadWord: 'Descargar Word', downloadPdf: 'Descargar PDF',
+            defaultProposalTitle: 'Propuesta de Prueba', productNamePlaceholder: '<Nombre del Producto>',
+            noCoverPhoto: 'Sin Foto de Portada',
+            tableOfContents: 'Índice',
+            sec1: '1. Introducción y Objetivos',
+            sec2: '2. Información de la Empresa y del Proyecto',
+            sec3: '3. Características del Producto y Prevención de Defectos',
+            sec4: '4. Cadena de Suministro Simulada',
+            sec5: '5. Configuración Propuesta de la Prueba',
+            sec6: '6. Plan de Evaluación',
+            sec7: '7. Requisitos y Acuerdos',
+            currentChallengeLabel: 'Desafío Actual:',
+            trialTargetLabel: 'Objetivo:',
+            expectedOutcomesLabel: 'Resultados Esperados:',
+            productLabel: 'Producto :',
+            stateOfProductLabel: 'Estado del producto :',
+            stateWhole: 'Entero', stateProcessed: 'Procesado / Cortado',
+            productOriginLabel: 'Origen del Producto :',
+            companyInfo: 'Información de la Empresa',
+            companyNameLabel: 'Nombre de Empresa :',
+            addressLabel: 'Dirección :',
+            contactPersonLabel: 'Persona de Contacto :',
+            contactDetailsLabel: 'Datos de Contacto :',
+            perfoTecSupport: 'Soporte PerfoTec',
+            perfoTecEmployeeLabel: 'Empleado PerfoTec :',
+            technologyLabel: 'Tecnología :',
+            o2MinAcp: 'O₂ mín (ACP):', co2MaxLabel: 'CO₂ máx:',
+            co2ShockLabel: 'Choque CO₂:', tempMinLabel: 'Temp mín:',
+            co2ShockHintTemplate: 'Caída < {max}% en {hours}h',
+            maxFallback: 'máx',
+            defectsMatrixTitle: 'Matriz de Defectos y Prevención',
+            matrixDefect: 'DEFECTO', matrixCause: 'CAUSA FISIOLÓGICA',
+            matrixMHP: 'EFECTO MHP (HUMEDAD)', matrixMAP: 'EFECTO MAP (GAS)',
+            supplyChainIntro: 'Para asegurar que la prueba sea representativa de las condiciones reales, proponemos probar el producto con el siguiente perfil de temperatura y tiempo:',
+            transportModeLabel: 'Modo de Transporte:',
+            supplyChainNote: '* Las temperaturas y duraciones se simulan en base a la información proporcionada.',
+            storedAtTemplate: 'Almacenado a {temp} durante {duration} en total.',
+            packedOnTemplate: 'El producto fue empacado el {date}.',
+            unpackingMomentsNote: 'Los momentos de desempaque son específicos para cada variante y se detallan en la tabla de Configuración de la Prueba a continuación.',
+            daysWord: 'días',
+            trialSetupIntro: 'Se utilizará el Sistema Fast Respiration Meter para medir la tasa exacta de respiración del producto. En base a ello calcularemos el patrón óptimo de microperforación para la variante PerfoTec. Las variantes propuestas a comparar son:',
+            thVariant: 'Variante', thPackagingType: 'Tipo de Empaque', thMaterial: 'Material',
+            thDimensions: 'Dimensiones', thNetWeight: 'Peso Neto',
+            thTransmission: 'Valor de Transmisión', thEvalDays: 'Días de Evaluación',
+            predictedGasLevels: 'Niveles de Gas Previstos',
+            variantFallback: 'Variante',
+            evalIntro: 'Durante la prueba, la calidad del producto y las condiciones atmosféricas serán monitoreadas continuamente según el siguiente cronograma.',
+            detailedSchedule: 'Cronograma Detallado de Evaluación',
+            thDay: 'Día', thMeasurements: 'Mediciones (O₂, CO₂, Peso)',
+            thMeasurementsWeightOnly: 'Mediciones (Peso)',
+            thOpening: 'Momento de Apertura', thQualityEval: 'Evaluación de Calidad',
+            methodology: 'Metodología',
+            methodGas: 'Análisis de Gas:', methodGasDesc: 'Medición de los porcentajes de O₂ y CO₂ dentro del empaque.',
+            methodWeight: 'Seguimiento de Peso:', methodWeightDesc: 'Monitoreo de la pérdida de humedad/peso desde el Día 0.',
+            methodVisual: 'Calidad Visual:', methodVisualDesc: 'Registro fotográfico del estado del producto.',
+            methodQuality: 'Evaluación Detallada de Calidad:',
+            methodQualityDesc: 'Puntuación de los siguientes criterios en una escala 1-10 (donde 6+ es aceptable):',
+            requiredProductTitle: 'Producto Requerido',
+            requiredProductTemplate: 'Se requiere un mínimo de {weight} de producto fresco para realizar esta prueba (basado en un total de {samples} muestras físicas únicas rastreadas en todas las variantes).'
+          }
+        };
+
+        // Render a string template like "Stored at {temp} for {duration}"
+        // wrapping each placeholder value in <strong>. Use for sentences where
+        // the dynamic values should stand out from the surrounding prose.
+        const renderBoldTemplate = (template, values) => {
+          if (!template) return null;
+          const parts = template.split(/(\{[a-zA-Z]+\})/g);
+          return parts.map((part, i) => {
+            const match = part.match(/^\{([a-zA-Z]+)\}$/);
+            if (match) {
+              return React.createElement('strong', { key: i }, values[match[1]] ?? '');
+            }
+            return part;
+          });
+        };
+
+        // Plain string fill (no React elements). Use for inline hints.
+        const fillTemplate = (template, values) => {
+          if (!template) return '';
+          return template.replace(/\{([a-zA-Z]+)\}/g, (_, k) => values[k] ?? '');
+        };
+
         // --- PRINT PREVIEW ---
-        const PrintPreview = ({ clientInfo, project, groups, proposal, supplyChain, onBack }) => {
+        const PrintPreview = ({ clientInfo, project, groups, proposal, supplyChain, lang, onBack }) => {
+          const pv = PV[lang] || PV.en;
           let allTemps = [];
-          (supplyChain || []).forEach(s => {
+          const chain = supplyChain || [];
+          let packIdx = chain.findIndex(s => s.action === 'pack');
+          if (packIdx === -1) packIdx = 0;
+          let unpackIdx = chain.findIndex((s, i) => i > packIdx && s.action === 'unpack');
+          if (unpackIdx === -1) unpackIdx = chain.length - 1;
+
+          let minDays = 0;
+          let maxDays = 0;
+
+          for (let i = packIdx; i <= unpackIdx; i++) {
+              const s = chain[i];
+              if (!s) continue;
               const ts = parseFloat(s.tempStart); if(!isNaN(ts)) allTemps.push(ts);
               const te = parseFloat(s.tempEnd); if(!isNaN(te)) allTemps.push(te);
-          });
+              
+              const dStart = parseFloat(s.daysStart) || 0;
+              const dEnd = s.daysEnd && !isNaN(parseFloat(s.daysEnd)) ? parseFloat(s.daysEnd) : dStart; 
+              minDays += dStart;
+              maxDays += dEnd;
+          }
+
           const minTemp = allTemps.length > 0 ? Math.min(...allTemps) : null;
           const maxTemp = allTemps.length > 0 ? Math.max(...allTemps) : null;
           const tempString = allTemps.length > 0 ? (minTemp === maxTemp ? `${minTemp}°C` : `${minTemp}°C - ${maxTemp}°C`) : '-°C';
-          const totalDays = project.totalDuration || (supplyChain || []).reduce((acc,s) => acc + parseFloat(s.daysStart || 0), 0);
+          const totalDays = project.totalDuration || (minDays === maxDays ? `${minDays}` : `${minDays} - ${maxDays}`);
 
           // Reusable class for titles to ensure they stand out even if CSS fails
           const reportTitleClass = "text-3xl font-extrabold uppercase mb-6 brand-heading break-after-avoid";
@@ -287,9 +526,9 @@
           return (
             <div className="min-h-screen bg-slate-600 p-0 sm:p-8 overflow-y-auto font-sans print:p-0 print:bg-white no-print-bg selection:bg-blue-200 selection:text-blue-900">
               <div className="fixed bottom-8 right-8 flex gap-4 no-print z-50">
-                <button onClick={onBack} className="bg-slate-800 text-white px-6 py-3 rounded-full shadow-xl font-bold transition hover:bg-slate-900 flex items-center gap-2"><Edit3 size={18}/> Edit</button>
+                <button onClick={onBack} className="bg-slate-800 text-white px-6 py-3 rounded-full shadow-xl font-bold transition hover:bg-slate-900 flex items-center gap-2"><Edit3 size={18}/> {pv.edit}</button>
                 <button onClick={handleWordExport} className="bg-blue-600 text-white px-6 py-3 rounded-full shadow-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition">
-                  <FileArchive size={20} /> Download Word
+                  <FileArchive size={20} /> {pv.downloadWord}
                 </button>
                 <button onClick={() => {
                   const company = clientInfo.companyName || 'Client';
@@ -298,7 +537,7 @@
                   if (globalConfig.printWithFilename) globalConfig.printWithFilename(suggested);
                   else window.print();
                 }} className="bg-green-600 text-white px-6 py-3 rounded-full shadow-xl font-bold flex items-center gap-2 hover:bg-green-700 transition">
-                  <Printer size={18} /> Download PDF
+                  <Printer size={18} /> {pv.downloadPdf}
                 </button>
               </div>
 
@@ -321,11 +560,11 @@
                           </div>
                       </div>
 
-                      <h1 className="text-5xl font-bold uppercase mt-16 mb-4 brand-heading" style={{ color: BRAND.colors.green }}>{project.reportTitle || 'Trial Proposal'}</h1>
-                      <h2 className="text-4xl font-light brand-heading text-slate-600 mb-12">{project.productName || '<Product Name>'}</h2>
+                      <h1 className="text-5xl font-bold uppercase mt-16 mb-4 brand-heading" style={{ color: BRAND.colors.green }}>{project.reportTitle || pv.defaultProposalTitle}</h1>
+                      <h2 className="text-4xl font-light brand-heading text-slate-600 mb-12">{project.productName || pv.productNamePlaceholder}</h2>
 
                       <div className="w-full h-[380px] overflow-hidden flex items-center justify-center relative bg-transparent border-none mt-6 rounded-2xl">
-                         {project.coverImage ? <img src={project.coverImage} className="w-full h-full object-contain" crossOrigin="anonymous" /> : project.startImage ? <img src={project.startImage} className="w-full h-full object-contain" crossOrigin="anonymous" /> : <span className="text-slate-300 italic font-medium">No Cover Photo</span>}
+                         {project.coverImage ? <img src={project.coverImage} className="w-full h-full object-contain" crossOrigin="anonymous" /> : project.startImage ? <img src={project.startImage} className="w-full h-full object-contain" crossOrigin="anonymous" /> : <span className="text-slate-300 italic font-medium">{pv.noCoverPhoto}</span>}
                       </div>
                    </div>
                    <div className="w-full flex justify-center items-end pb-4">
@@ -337,15 +576,15 @@
 
                 {/* --- TABLE OF CONTENTS --- */}
                 <div className="flex flex-col pt-12 break-inside-avoid">
-                    <h2 className="text-4xl font-extrabold uppercase mb-8 brand-heading" style={{ color: BRAND.colors.green, borderBottom: `3px solid ${BRAND.colors.gray}`, paddingBottom: '1rem' }}>Table of Contents</h2>
+                    <h2 className="text-4xl font-extrabold uppercase mb-8 brand-heading" style={{ color: BRAND.colors.green, borderBottom: `3px solid ${BRAND.colors.gray}`, paddingBottom: '1rem' }}>{pv.tableOfContents}</h2>
                     <ul className="text-xl space-y-4 font-medium text-slate-700">
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>1. Introduction & Objectives</span></li>
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>2. Company & Project Info</span></li>
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>3. Product Characteristics & Defect Prevention</span></li>
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>4. Simulated Supply Chain</span></li>
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>5. Proposed Trial Setup</span></li>
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>6. Evaluation Plan</span></li>
-                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>7. Requirements & Agreements</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec1}</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec2}</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec3}</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec4}</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec5}</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec6}</span></li>
+                        <li className="flex justify-between border-b border-slate-200 pb-2"><span>{pv.sec7}</span></li>
                     </ul>
                 </div>
 
@@ -353,7 +592,7 @@
 
                 {/* --- PAGE 1: INTRO & SETTING --- */}
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>1. Introduction & Objectives</h2>
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec1}</h2>
                   <div className="text-base print:text-xs leading-relaxed print:leading-tight text-justify text-slate-800 mb-8 print:mb-3">
                      <div className="mb-6 print:mb-2 whitespace-pre-wrap pdf-rich-text" dangerouslySetInnerHTML={{ __html: proposal?.intro || '' }}></div>
 
@@ -362,13 +601,13 @@
                        <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-6 print:gap-3 mb-6 print:mb-2">
                          {project.currentChallenge && (
                            <div className="bg-orange-50 p-5 print:p-3 rounded-2xl border border-orange-100">
-                             <h4 className="font-bold text-lg print:text-sm mb-2 print:mb-1 text-orange-800">Current Challenge:</h4>
+                             <h4 className="font-bold text-lg print:text-sm mb-2 print:mb-1 text-orange-800">{pv.currentChallengeLabel}</h4>
                              <div className="whitespace-pre-wrap text-slate-700 leading-snug print:leading-tight">{project.currentChallenge}</div>
                            </div>
                          )}
                          {project.trialTarget && (
                            <div className="bg-green-50 p-5 print:p-3 rounded-2xl border border-green-100">
-                             <h4 className="font-bold text-lg print:text-sm mb-2 print:mb-1 text-green-800">Trial Target:</h4>
+                             <h4 className="font-bold text-lg print:text-sm mb-2 print:mb-1 text-green-800">{pv.trialTargetLabel}</h4>
                              <div className="whitespace-pre-wrap text-slate-700 leading-snug print:leading-tight">{project.trialTarget}</div>
                            </div>
                          )}
@@ -377,7 +616,7 @@
 
                      {proposal?.expectedOutcomes && (
                        <div className="mb-6 print:mb-2">
-                         <h4 className="font-bold text-lg print:text-sm mb-2 print:mb-1" style={{color: BRAND.colors.blue}}>Expected Outcomes:</h4>
+                         <h4 className="font-bold text-lg print:text-sm mb-2 print:mb-1" style={{color: BRAND.colors.blue}}>{pv.expectedOutcomesLabel}</h4>
                          <div className="whitespace-pre-wrap pdf-rich-text" dangerouslySetInnerHTML={{ __html: proposal.expectedOutcomes }}></div>
                        </div>
                      )}
@@ -387,32 +626,32 @@
                 <div className="page-break"></div>
 
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>2. Company & Project Info</h2>
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec2}</h2>
                   <div className="grid grid-cols-[180px_1fr] print:grid-cols-[130px_1fr] gap-y-3 print:gap-y-1 text-base print:text-xs text-slate-800 bg-slate-50 p-6 print:p-3 rounded-2xl border border-slate-200 leading-snug print:leading-tight">
-                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Product :</div> <div className="font-bold">{project.productName || '-'} {project.type ? `(${project.type})` : ''}</div>
-                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">State of product :</div> <div className="font-medium">{project.processingType === 'Whole' ? 'Whole' : 'Processed / Fresh-cut'}</div>
-                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Product Origin :</div> <div className="font-medium">{project.origin || '-'}</div>
+                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.productLabel}</div> <div className="font-bold">{project.productName || '-'} {project.type ? `(${project.type})` : ''}</div>
+                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.stateOfProductLabel}</div> <div className="font-medium">{project.processingType === 'Whole' ? pv.stateWhole : pv.stateProcessed}</div>
+                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.productOriginLabel}</div> <div className="font-medium">{project.origin || '-'}</div>
 
                      {(clientInfo.companyName || clientInfo.street || clientInfo.contactName || clientInfo.email || clientInfo.phone) && (
-                       <div className="font-bold col-span-2 mt-4 print:mt-2 border-t border-slate-200 pt-4 print:pt-2 text-lg print:text-sm" style={{color: BRAND.colors.green}}>Company Info</div>
+                       <div className="font-bold col-span-2 mt-4 print:mt-2 border-t border-slate-200 pt-4 print:pt-2 text-lg print:text-sm" style={{color: BRAND.colors.green}}>{pv.companyInfo}</div>
                      )}
-                     {clientInfo.companyName && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Company Name :</div> <div className="font-bold">{clientInfo.companyName}</div></>}
+                     {clientInfo.companyName && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.companyNameLabel}</div> <div className="font-bold">{clientInfo.companyName}</div></>}
 
                      {(() => {
                        const streetPart = [clientInfo.street, clientInfo.houseNumber].filter(Boolean).join(' ');
                        const cityPart = [clientInfo.zipCode, clientInfo.city].filter(Boolean).join(' ');
                        const addressStr = [streetPart, clientInfo.addressExtra, cityPart, clientInfo.country].filter(Boolean).join(', ');
-                       return addressStr ? <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Address :</div> <div className="font-medium">{addressStr}</div></> : null;
+                       return addressStr ? <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.addressLabel}</div> <div className="font-medium">{addressStr}</div></> : null;
                      })()}
 
-                     {clientInfo.contactName && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Contact Person :</div> <div className="font-medium">{clientInfo.contactName} {clientInfo.role && <span className="text-slate-500">({clientInfo.role})</span>}</div></>}
-                     {(clientInfo.email || clientInfo.phone) && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Contact Details :</div> <div className="font-medium">{[clientInfo.email, clientInfo.phone].filter(Boolean).join(' | ')}</div></>}
+                     {clientInfo.contactName && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.contactPersonLabel}</div> <div className="font-medium">{clientInfo.contactName} {clientInfo.role && <span className="text-slate-500">({clientInfo.role})</span>}</div></>}
+                     {(clientInfo.email || clientInfo.phone) && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.contactDetailsLabel}</div> <div className="font-medium">{[clientInfo.email, clientInfo.phone].filter(Boolean).join(' | ')}</div></>}
 
-                     <div className="font-bold col-span-2 mt-4 print:mt-2 border-t border-slate-200 pt-4 print:pt-2 text-lg print:text-sm" style={{color: BRAND.colors.green}}>PerfoTec Support</div>
-                     {project.employee && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">PerfoTec Employee :</div> <div className="font-medium">{project.employee}</div></>}
-                     {(project.employeeEmail || project.employeePhone) && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">Contact Details :</div> <div className="font-medium">{[project.employeeEmail, project.employeePhone].filter(Boolean).join(' | ')}</div></>}
+                     <div className="font-bold col-span-2 mt-4 print:mt-2 border-t border-slate-200 pt-4 print:pt-2 text-lg print:text-sm" style={{color: BRAND.colors.green}}>{pv.perfoTecSupport}</div>
+                     {project.employee && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.perfoTecEmployeeLabel}</div> <div className="font-medium">{project.employee}</div></>}
+                     {(project.employeeEmail || project.employeePhone) && <><div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-center">{pv.contactDetailsLabel}</div> <div className="font-medium">{[project.employeeEmail, project.employeePhone].filter(Boolean).join(' | ')}</div></>}
 
-                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-start mt-1">Technology :</div>
+                     <div className="font-bold text-slate-500 uppercase tracking-wide text-xs print:text-[10px] flex items-start mt-1">{pv.technologyLabel}</div>
                      <div className="font-medium">
                        {project.technologies && project.technologies.length > 0 ? (
                           <ul className="list-disc pl-4 space-y-1 print:space-y-0">
@@ -429,26 +668,26 @@
 
                 {/* --- PAGE 3: PRODUCT CHARACTERISTICS & MATRIX --- */}
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>3. Product Characteristics & Defect Prevention</h2>
-                  
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec3}</h2>
+
                   <div className="mb-8 print:mb-3 grid grid-cols-4 gap-4 print:gap-2 text-sm print:text-xs">
-                      {project.acpO2 && <div className="bg-blue-50 p-4 print:p-2 rounded-xl border border-blue-100 shadow-sm"><strong className="text-blue-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">O₂ min (ACP):</strong><span className="text-xl print:text-base font-extrabold text-[#004B87]">{project.acpO2}</span></div>}
-                      {project.co2Max && <div className="bg-red-50 p-4 print:p-2 rounded-xl border border-red-100 shadow-sm"><strong className="text-red-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">CO₂ max:</strong><span className="text-xl print:text-base font-extrabold text-red-600">{project.co2Max}</span></div>}
-                      {project.co2Shock && <div className="bg-orange-50 p-4 print:p-2 rounded-xl border border-orange-100 shadow-sm"><strong className="text-orange-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">CO₂ shock:</strong><span className="text-xl print:text-base font-extrabold text-orange-600">{project.co2Shock}</span>{project.co2ShockHours && <div className="text-xs print:text-[9px] text-orange-600/80 mt-1 font-medium leading-tight">Drop &lt; {project.co2Max || 'max'}% within {project.co2ShockHours}h</div>}</div>}
-                      {project.tempMin && <div className="bg-slate-50 p-4 print:p-2 rounded-xl border border-slate-200 shadow-sm"><strong className="text-slate-500 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">Temp min:</strong><span className="text-xl print:text-base font-extrabold text-slate-800">{project.tempMin}</span></div>}
+                      {project.acpO2 && <div className="bg-blue-50 p-4 print:p-2 rounded-xl border border-blue-100 shadow-sm"><strong className="text-blue-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.o2MinAcp}</strong><span className="text-xl print:text-base font-extrabold text-[#004B87]">{project.acpO2}</span></div>}
+                      {project.co2Max && <div className="bg-red-50 p-4 print:p-2 rounded-xl border border-red-100 shadow-sm"><strong className="text-red-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.co2MaxLabel}</strong><span className="text-xl print:text-base font-extrabold text-red-600">{project.co2Max}</span></div>}
+                      {project.co2Shock && <div className="bg-orange-50 p-4 print:p-2 rounded-xl border border-orange-100 shadow-sm"><strong className="text-orange-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.co2ShockLabel}</strong><span className="text-xl print:text-base font-extrabold text-orange-600">{project.co2Shock}</span>{project.co2ShockHours && <div className="text-xs print:text-[9px] text-orange-600/80 mt-1 font-medium leading-tight">{fillTemplate(pv.co2ShockHintTemplate, { max: project.co2Max || pv.maxFallback, hours: project.co2ShockHours })}</div>}</div>}
+                      {project.tempMin && <div className="bg-slate-50 p-4 print:p-2 rounded-xl border border-slate-200 shadow-sm"><strong className="text-slate-500 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.tempMinLabel}</strong><span className="text-xl print:text-base font-extrabold text-slate-800">{project.tempMin}</span></div>}
                   </div>
 
                   {project.defectsMatrix && project.defectsMatrix.length > 0 && (
                       <div className="break-inside-avoid mb-8 print:mb-3">
-                          <h3 className="font-bold text-xl print:text-sm mb-4 print:mb-2 brand-heading" style={{ color: BRAND.colors.green }}>Defects & Prevention Matrix</h3>
+                          <h3 className="font-bold text-xl print:text-sm mb-4 print:mb-2 brand-heading" style={{ color: BRAND.colors.green }}>{pv.defectsMatrixTitle}</h3>
                           <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
                               <table className="w-full text-sm print:text-xs border-collapse">
                                   <thead>
                                       <tr>
-                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#004B87'}}>DEFECT</th>
-                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#004B87'}}>PHYSIOLOGICAL CAUSE</th>
-                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#5B9BD5'}}>EFFECT MHP (MOISTURE)</th>
-                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#007C27'}}>EFFECT MAP (GAS)</th>
+                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#004B87'}}>{pv.matrixDefect}</th>
+                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#004B87'}}>{pv.matrixCause}</th>
+                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#5B9BD5'}}>{pv.matrixMHP}</th>
+                                          <th className="p-3 print:p-2 text-left text-white font-bold" style={{backgroundColor: '#007C27'}}>{pv.matrixMAP}</th>
                                       </tr>
                                   </thead>
                                   <tbody className="divide-y divide-slate-200">
@@ -471,13 +710,13 @@
 
                 {/* --- PAGE 4: SUPPLY CHAIN --- */}
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>4. Simulated Supply Chain</h2>
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec4}</h2>
                   <div className="text-base print:text-xs text-slate-800 mb-8 print:mb-3">
-                     <p className="mb-4 print:mb-2 leading-relaxed print:leading-tight">To ensure the trial is representative of the real-world conditions, we propose to test the product using the following temperature and time profile:</p>
+                     <p className="mb-4 print:mb-2 leading-relaxed print:leading-tight">{pv.supplyChainIntro}</p>
 
                      {project.transportMode && (
                        <div className="mb-4 print:mb-2 inline-block bg-indigo-50 border border-indigo-100 text-indigo-800 px-4 py-2 print:px-3 print:py-1 rounded-lg">
-                         <strong>Transport Mode:</strong> {project.transportMode}
+                         <strong>{pv.transportModeLabel}</strong> {project.transportMode}
                        </div>
                      )}
 
@@ -485,10 +724,10 @@
                        <ProductSupplyChainFlow chain={supplyChain} />
                      </div>
                      <div className="mt-6 print:mt-2 bg-slate-50 p-4 print:p-3 rounded-xl border border-slate-200 text-sm print:text-xs space-y-2 print:space-y-0.5 leading-snug print:leading-tight">
-                         <p className="italic text-slate-500">* Temperatures and durations are simulated based on provided information.</p>
-                         <p>Stored at <strong>{tempString}</strong> for <strong>{totalDays} days</strong> total.</p>
-                         <p>The product was packed on <strong>{formatDateToDDMMYYYY(project.packingDate || project.date)}</strong>.</p>
-                         <p>Unpacking moments are specific to each variant and are detailed in the Trial Setup table below.</p>
+                         <p className="italic text-slate-500">{pv.supplyChainNote}</p>
+                         <p>{renderBoldTemplate(pv.storedAtTemplate, { temp: tempString, duration: `${totalDays} ${pv.daysWord}` })}</p>
+                         <p>{renderBoldTemplate(pv.packedOnTemplate, { date: formatDateToDDMMYYYY(project.packingDate || project.date) })}</p>
+                         <p>{pv.unpackingMomentsNote}</p>
                      </div>
                   </div>
                 </div>
@@ -496,21 +735,21 @@
                 <div className="page-break"></div>
 
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>5. Proposed Trial Setup</h2>
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec5}</h2>
                   <div className="text-base print:text-xs text-slate-800 mb-8 print:mb-3">
-                      <p className="mb-6 print:mb-2 leading-relaxed print:leading-tight">The Fast Respiration Meter System will be used to measure the exact product respiration rate. Based on this, we calculate the optimal micro perforation pattern for the PerfoTec variant. The proposed variants to compare are:</p>
+                      <p className="mb-6 print:mb-2 leading-relaxed print:leading-tight">{pv.trialSetupIntro}</p>
 
                       <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm break-inside-avoid">
                           <table className="report-table w-full text-sm print:text-xs">
                             <thead>
                               <tr>
-                                <th className="w-1/4">Variant</th>
-                                <th className="text-center">Packaging Type</th>
-                                <th className="text-center">Material</th>
-                                <th className="text-center">Dimensions (mm)</th>
-                                <th className="text-center">Netto Weight (g)</th>
-                                <th className="text-center">Transmission Value</th>
-                                <th className="text-center">Evaluation Days</th>
+                                <th className="w-1/4">{pv.thVariant}</th>
+                                <th className="text-center">{pv.thPackagingType}</th>
+                                <th className="text-center">{pv.thMaterial}</th>
+                                <th className="text-center">{pv.thDimensions}</th>
+                                <th className="text-center">{pv.thNetWeight}</th>
+                                <th className="text-center">{pv.thTransmission}</th>
+                                <th className="text-center">{pv.thEvalDays}</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200">
@@ -539,13 +778,13 @@
                       {/* PREDICTED GAS GRAPHS */}
                       {groups.some(g => g.predictedImage) && (
                           <div className="mt-10 print:mt-3 break-inside-avoid bg-slate-50 p-8 print:p-3 rounded-2xl border border-slate-200">
-                             <h4 className="font-bold mb-8 print:mb-3 text-2xl print:text-sm text-slate-800">Predicted Gas Levels</h4>
+                             <h4 className="font-bold mb-8 print:mb-3 text-2xl print:text-sm text-slate-800">{pv.predictedGasLevels}</h4>
                              <div className="flex flex-col gap-12 print:gap-4 w-full">
                                {groups.map((g, idx) => {
                                   if (!g.predictedImage) return null;
                                   return (
                                      <div key={g.id} className="flex flex-col items-center w-full break-inside-avoid">
-                                        <div className="text-lg print:text-xs font-bold mb-4 print:mb-2 text-center text-slate-700 bg-white px-6 py-2 print:px-3 print:py-1 rounded-full shadow-sm border border-slate-200">{g.name || 'Variant'}</div>
+                                        <div className="text-lg print:text-xs font-bold mb-4 print:mb-2 text-center text-slate-700 bg-white px-6 py-2 print:px-3 print:py-1 rounded-full shadow-sm border border-slate-200">{g.name || pv.variantFallback}</div>
                                         <div className="w-full flex justify-center bg-white border border-slate-200 rounded-xl p-6 print:p-2 shadow-sm">
                                            <img src={g.predictedImage} className="w-full h-auto object-contain" crossOrigin="anonymous" />
                                         </div>
@@ -563,22 +802,24 @@
 
                 {/* --- PAGE 6: EVALUATION PLAN --- */}
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>6. Evaluation Plan</h2>
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec6}</h2>
                   <div className="text-base print:text-xs space-y-6 print:space-y-2 text-slate-800">
-                     <p className="leading-relaxed print:leading-tight">During the trial, the product quality and atmospheric conditions will be continuously monitored according to the schedule below.</p>
+                     <p className="leading-relaxed print:leading-tight">{pv.evalIntro}</p>
 
                      <div className="mb-8 print:mb-3">
-                       <h3 className="font-bold text-xl print:text-sm mb-6 print:mb-2 text-slate-800">Detailed Evaluation Schedule</h3>
+                       <h3 className="font-bold text-xl print:text-sm mb-6 print:mb-2 text-slate-800">{pv.detailedSchedule}</h3>
                        {groups.map((g, i) => (
                          <div key={g.id} className="mb-8 print:mb-2 break-inside-avoid shadow-sm rounded-xl overflow-hidden border border-slate-200">
                            <h4 className="font-bold text-lg print:text-sm text-white p-3 print:p-2" style={{backgroundColor: CHART_COLORS[i % CHART_COLORS.length].stroke}}>{g.name}</h4>
                            <table className="w-full text-sm print:text-xs text-left bg-white">
                              <thead>
                                <tr className="bg-slate-50 text-slate-600 border-b border-slate-200">
-                                 <th className="p-3 print:p-2 w-20 text-center font-bold uppercase tracking-wider text-xs print:text-[9px]">Day</th>
-                                 <th className="p-3 print:p-2 font-bold uppercase tracking-wider text-xs print:text-[9px]">Measurements (O₂, CO₂, Weight)</th>
-                                 <th className="p-3 print:p-2 font-bold uppercase tracking-wider text-xs print:text-[9px]">Opening Moment</th>
-                                 <th className="p-3 print:p-2 font-bold uppercase tracking-wider text-xs print:text-[9px]">Quality Evaluation</th>
+                                 <th className="p-3 print:p-2 w-20 text-center font-bold uppercase tracking-wider text-xs print:text-[9px]">{pv.thDay}</th>
+                                 <th className="p-3 print:p-2 font-bold uppercase tracking-wider text-xs print:text-[9px]">
+                                   {(!g.specs.atmosphereStrategy || g.specs.atmosphereStrategy === 'MAP') ? pv.thMeasurements : pv.thMeasurementsWeightOnly}
+                                 </th>
+                                 <th className="p-3 print:p-2 font-bold uppercase tracking-wider text-xs print:text-[9px]">{pv.thOpening}</th>
+                                 <th className="p-3 print:p-2 font-bold uppercase tracking-wider text-xs print:text-[9px]">{pv.thQualityEval}</th>
                                </tr>
                              </thead>
                              <tbody className="divide-y divide-slate-100">
@@ -597,15 +838,15 @@
                      </div>
 
                      <div className="break-inside-avoid mt-8 print:mt-3 pt-6 print:pt-2 border-t border-slate-200 bg-slate-50 p-6 print:p-3 rounded-2xl">
-                       <h4 className="font-bold mb-4 print:mb-2 text-xl print:text-sm text-slate-800">Methodology</h4>
+                       <h4 className="font-bold mb-4 print:mb-2 text-xl print:text-sm text-slate-800">{pv.methodology}</h4>
                        <ul className="list-disc pl-6 print:pl-4 space-y-3 print:space-y-1 text-slate-700 leading-snug print:leading-tight">
-                         <li><strong>Gas Analysis:</strong> Measuring O₂ and CO₂ percentages inside the packaging.</li>
-                         <li><strong>Weight Tracking:</strong> Monitoring moisture/weight loss from Day 0.</li>
-                         <li><strong>Visual Quality:</strong> Taking photographic evidence of the product state.</li>
+                         <li><strong>{pv.methodGas}</strong> {pv.methodGasDesc}</li>
+                         <li><strong>{pv.methodWeight}</strong> {pv.methodWeightDesc}</li>
+                         <li><strong>{pv.methodVisual}</strong> {pv.methodVisualDesc}</li>
                          <li>
-                            <strong>Detailed Quality Assessment:</strong> Scoring the following criteria on a 1-10 scale (where 6+ is acceptable):
+                            <strong>{pv.methodQuality}</strong> {pv.methodQualityDesc}
                             <ul className="list-circle pl-6 print:pl-4 mt-3 print:mt-1 grid grid-cols-2 print:grid-cols-3 gap-x-4 gap-y-2 print:gap-x-3 print:gap-y-0 text-sm print:text-xs font-medium text-slate-600 leading-snug print:leading-tight">
-                                {(project.criteria || []).map((c, i) => <li key={i}>{c}</li>)}
+                                {(project.criteria || []).map((c, i) => <li key={i}>{(globalConfig.getI18nLabel && globalConfig.DEFAULT_CRITERIA_I18N) ? globalConfig.getI18nLabel(globalConfig.DEFAULT_CRITERIA_I18N, c, lang) : c}</li>)}
                             </ul>
                          </li>
                        </ul>
@@ -617,7 +858,7 @@
                 <div className="page-break"></div>
 
                 <div className="pt-4">
-                  <h2 className={reportTitleClass} style={reportTitleStyle}>7. Requirements & Agreements</h2>
+                  <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec7}</h2>
                   <div className="text-base print:text-xs space-y-6 print:space-y-2 text-slate-800">
                      {proposal?.requirements && (
                          <div className="break-inside-avoid">
@@ -637,8 +878,8 @@
                                  <div className="mb-6 print:mb-2 bg-blue-50 border border-blue-200 p-5 print:p-3 text-sm print:text-xs text-blue-900 rounded-2xl flex items-start gap-4 print:gap-2 shadow-sm">
                                    <AlertCircle className="text-blue-500 shrink-0 mt-0.5" size={20} />
                                    <div className="leading-snug print:leading-tight">
-                                      <strong className="block text-base print:text-sm mb-1 text-blue-950">Required Product</strong>
-                                      A minimum of <strong>{totalRequiredWeightKg} kg</strong> of fresh product is required to conduct this trial (based on a total of {totalSamplesCount} uniquely tracked physical samples across all variants).
+                                      <strong className="block text-base print:text-sm mb-1 text-blue-950">{pv.requiredProductTitle}</strong>
+                                      {renderBoldTemplate(pv.requiredProductTemplate, { weight: `${totalRequiredWeightKg} kg`, samples: totalSamplesCount })}
                                    </div>
                                  </div>
                                );
@@ -808,13 +1049,13 @@
               globalEvalDays: 'Global Evaluation Days', evalDaysDesc: 'Specify the days on which packs are opened and evaluated.',
               addEvalDay: 'Add Evaluation Day', perfoTecTech: 'PerfoTec Technology',
               addVariant: 'Add Variant', variantConfig: 'Variant Configuration',
-              variantName: 'Variant Name', packagingType: 'Packaging Type',
+              variantName: 'Variant Name', packagingType: 'Packaging Type', atmosphereStrategy: 'Atmosphere Strategy', optMAP: 'MAP (Atmosphere buildup)', optMHP: 'MHP (No atmosphere buildup)', optOpen: 'Open (No packaging)',
               packagingSpecs: 'Packaging Specs & Samples',
               lengthMm: 'Length (mm)', widthMm: 'Width (mm)', heightMm: 'Height (mm)',
               material: 'Material', transmissionValue: 'Transmission Value', samplesPerMeasurement: 'Samples / Measurement',
               timelineEvents: 'Timeline & Events',
               timelineDesc: 'Select the specific sample numbers (e.g., 1, 2, 3) representing the physical packages to be processed for each action.',
-              thDay: 'Day', thMeasure: 'Measure Gas/Wt.', thOpen: 'Open Pack', thEvaluate: 'Evaluate Quality',
+              thDay: 'Day', thMeasure: 'Measure Gas/Wt.', thMeasureWeight: 'Measure Wt.', thOpen: 'Open Pack', thEvaluate: 'Evaluate Quality',
               timelineNote: "Once a sample is marked as 'Open' on a previous day, it can no longer be selected for gas/weight measurements (the button will be greyed out).",
               predictedGraph: 'Predicted Gas Graph', predictedGraphDesc: 'Upload a screenshot of the prediction for this specific variant',
               uploadImage: 'Upload Image',
@@ -836,7 +1077,29 @@
               day: 'Day', variant: 'Variant', duplicate: 'Duplicate', remove: 'Remove',
               transportRoad: 'Transport by road', transportSea: 'Seafreight', transportAir: 'Airfreight', transportStorage: 'Storage',
               stagePlaceholder: 'e.g. Farm, Transport...', min: 'Min', max: 'Max',
-              metric: 'Metric', imperial: 'Imperial', supplyChainFlow: 'Supply Chain Flow'
+              metric: 'Metric', imperial: 'Imperial', supplyChainFlow: 'Supply Chain Flow',
+              secDefects: '5. Product Characteristics & Defect Prevention',
+              defectsMatrixSubtitle: 'Defects & Prevention Matrix',
+              defectsMatrixDesc: 'List the typical defects for this product. For each defect, describe the physiological cause and how MHP (moisture) and MAP (gas) treatments influence it.',
+              defectColLabel: 'Defect', causeColLabel: 'Physiological Cause',
+              effectMHPColLabel: 'Effect MHP (Moisture)', effectMAPColLabel: 'Effect MAP (Gas)',
+              defectPlaceholder: 'e.g. Browning', causePlaceholder: 'e.g. Oxidation',
+              effectMHPPlaceholder: 'Effect of moisture treatment...', effectMAPPlaceholder: 'Effect of gas treatment...',
+              addDefectRow: 'Add Defect', removeDefectRow: 'Remove defect',
+              noDefectsAdded: 'No defects added yet — click below to add the first one.',
+              productProperties: 'Product Properties',
+              productPropertiesDesc: 'Optimal operating window for this product. The ACP is the lower oxygen limit, below which the cell switches to anaerobic respiration.',
+              o2TargetLabel: 'O₂ Target', o2AcpLabel: 'O₂ ACP',
+              co2TargetLabel: 'CO₂ Target', co2CriticalLabel: 'CO₂ Critical %',
+              tempCriticalLabel: 'Temp Critical (min)', ethyleneProfileLabel: 'Ethylene Profile',
+              o2TargetPlaceholder: 'e.g. 1.0% - 5.0%', co2TargetPlaceholder: 'e.g. 5.0% - 15.0%',
+              tempCriticalPlaceholder: 'e.g. 0°C - 4°C', o2AcpPlaceholder: 'e.g. 0.2% - 0.4%',
+              co2CriticalPlaceholder: 'e.g. 15%', ethyleneProfilePlaceholder: 'e.g. Climacteric — high ethylene production',
+              productSheetDropTitle: 'Import Product Sheet',
+              productSheetDropDesc: 'Drag a PerfoTec product-sheet HTML file here, or click to upload. The defects matrix and gas/temperature targets will be filled automatically.',
+              productSheetBrowse: 'Choose product-sheet file',
+              productSheetDropActive: 'Drop the file to import…',
+              productSheetParseFail: 'Could not parse this product sheet. Check that it contains a defects matrix and an "Optimal Conditions" section.'
             },
             nl: {
               loadJson: 'Laden JSON', saveAs: 'Opslaan als...', previewProposal: 'Preview Voorstel',
@@ -868,13 +1131,13 @@
               globalEvalDays: 'Globale Evaluatiedagen', evalDaysDesc: 'Geef de dagen op waarop verpakkingen worden geopend en beoordeeld.',
               addEvalDay: 'Evaluatiedag Toevoegen', perfoTecTech: 'PerfoTec Technologie',
               addVariant: 'Variant Toevoegen', variantConfig: 'Variant Configuratie',
-              variantName: 'Variant Naam', packagingType: 'Type Verpakking',
+              variantName: 'Variant Naam', packagingType: 'Type Verpakking', atmosphereStrategy: 'Atmosfeer Strategie', optMAP: 'MAP (gericht op atmosfeer)', optMHP: 'MHP (geen atmosfeer opbouw)', optOpen: 'Open (geen verpakking)',
               packagingSpecs: 'Verpakkingsspecificaties & Monsters',
               lengthMm: 'Lengte (mm)', widthMm: 'Breedte (mm)', heightMm: 'Hoogte (mm)',
               material: 'Materiaal', transmissionValue: 'Transmissiewaarde', samplesPerMeasurement: 'Monsters / Meting',
               timelineEvents: 'Tijdlijn & Gebeurtenissen',
               timelineDesc: 'Selecteer de specifieke monsternummers (bijv. 1, 2, 3) die de fysieke verpakkingen vertegenwoordigen die per actie worden verwerkt.',
-              thDay: 'Dag', thMeasure: 'Meet Gas/Gew.', thOpen: 'Open Verpakking', thEvaluate: 'Beoordeel Kwaliteit',
+              thDay: 'Dag', thMeasure: 'Meet Gas/Gew.', thMeasureWeight: 'Meet Gew.', thOpen: 'Open Verpakking', thEvaluate: 'Beoordeel Kwaliteit',
               timelineNote: 'Zodra een monster op een eerdere dag als \'Open\' is gemarkeerd, kan het niet meer worden geselecteerd voor gas-/gewichtsmetingen (de knop wordt grijs).',
               predictedGraph: 'Voorspelde Gas Grafiek', predictedGraphDesc: 'Upload een screenshot van de voorspelling voor deze specifieke variant',
               uploadImage: 'Afbeelding Uploaden',
@@ -894,7 +1157,29 @@
               day: 'Dag', variant: 'Variant', duplicate: 'Dupliceren', remove: 'Verwijderen',
               transportRoad: 'Wegtransport', transportSea: 'Zeevracht', transportAir: 'Luchtvracht', transportStorage: 'Opslag',
               stagePlaceholder: 'bijv. Boerderij, Transport...', min: 'Min', max: 'Max',
-              metric: 'Metrisch', imperial: 'Imperiaal', supplyChainFlow: 'Supply Chain Flow'
+              metric: 'Metrisch', imperial: 'Imperiaal', supplyChainFlow: 'Supply Chain Flow',
+              secDefects: '5. Producteigenschappen & Defectpreventie',
+              defectsMatrixSubtitle: 'Defecten & Preventiematrix',
+              defectsMatrixDesc: 'Voer de typische defecten voor dit product op. Beschrijf per defect de fysiologische oorzaak en hoe MHP (vocht) en MAP (gas) behandeling deze beïnvloeden.',
+              defectColLabel: 'Defect', causeColLabel: 'Fysiologische Oorzaak',
+              effectMHPColLabel: 'Effect MHP (Vocht)', effectMAPColLabel: 'Effect MAP (Gas)',
+              defectPlaceholder: 'bv. Verbruining', causePlaceholder: 'bv. Oxidatie',
+              effectMHPPlaceholder: 'Effect van vochtbehandeling...', effectMAPPlaceholder: 'Effect van gasbehandeling...',
+              addDefectRow: 'Defect Toevoegen', removeDefectRow: 'Defect verwijderen',
+              noDefectsAdded: 'Nog geen defecten toegevoegd — klik hieronder om de eerste toe te voegen.',
+              productProperties: 'Producteigenschappen',
+              productPropertiesDesc: 'Optimaal werkvenster voor dit product. Het ACP is de onderste zuurstofgrens, daaronder schakelt de cel om naar anaerobe ademhaling.',
+              o2TargetLabel: 'O₂ Target', o2AcpLabel: 'O₂ ACP',
+              co2TargetLabel: 'CO₂ Target', co2CriticalLabel: 'CO₂ Kritisch %',
+              tempCriticalLabel: 'Temp Kritisch (min)', ethyleneProfileLabel: 'Ethyleen Profiel',
+              o2TargetPlaceholder: 'bv. 1.0% - 5.0%', co2TargetPlaceholder: 'bv. 5.0% - 15.0%',
+              tempCriticalPlaceholder: 'bv. 0°C - 4°C', o2AcpPlaceholder: 'bv. 0.2% - 0.4%',
+              co2CriticalPlaceholder: 'bv. 15%', ethyleneProfilePlaceholder: 'bv. Climacterisch — hoge ethyleenproductie',
+              productSheetDropTitle: 'Product Sheet Importeren',
+              productSheetDropDesc: 'Sleep een PerfoTec product-sheet HTML hier, of klik om te uploaden. De defectenmatrix en gas/temperatuur targets worden automatisch ingevuld.',
+              productSheetBrowse: 'Kies product-sheet bestand',
+              productSheetDropActive: 'Laat het bestand los om te importeren…',
+              productSheetParseFail: 'Kon deze product sheet niet inlezen. Controleer of er een defectenmatrix en een "Optimale Condities" sectie in staat.'
             },
             es: {
               loadJson: 'Cargar JSON', saveAs: 'Guardar como...', previewProposal: 'Ver Propuesta',
@@ -926,13 +1211,13 @@
               globalEvalDays: 'Días de Evaluación Global', evalDaysDesc: 'Especifique los días en que se abren y evalúan los paquetes.',
               addEvalDay: 'Añadir Día de Evaluación', perfoTecTech: 'Tecnología PerfoTec',
               addVariant: 'Añadir Variante', variantConfig: 'Configuración de Variante',
-              variantName: 'Nombre de Variante', packagingType: 'Tipo de Empaque',
+              variantName: 'Nombre de Variante', packagingType: 'Tipo de Empaque', atmosphereStrategy: 'Estrategia de Atmósfera', optMAP: 'MAP (Modificación de atmósfera)', optMHP: 'MHP (Sin modificación de atmósfera)', optOpen: 'Abierto (Sin empaque)',
               packagingSpecs: 'Especificaciones y Muestras',
               lengthMm: 'Largo (mm)', widthMm: 'Ancho (mm)', heightMm: 'Alto (mm)',
               material: 'Material', transmissionValue: 'Valor de Transmisión', samplesPerMeasurement: 'Muestras / Medición',
               timelineEvents: 'Cronograma y Eventos',
               timelineDesc: 'Seleccione los números de muestra específicos (ej. 1, 2, 3) que representan los paquetes físicos a procesar para cada acción.',
-              thDay: 'Día', thMeasure: 'Medir Gas/Peso', thOpen: 'Abrir Paquete', thEvaluate: 'Evaluar Calidad',
+              thDay: 'Día', thMeasure: 'Medir Gas/Peso', thMeasureWeight: 'Medir Peso', thOpen: 'Abrir Paquete', thEvaluate: 'Evaluar Calidad',
               timelineNote: 'Una vez que una muestra se marca como \'Abierta\' en un día anterior, ya no se puede seleccionar para mediciones de gas/peso (el botón se desactivará).',
               predictedGraph: 'Gráfico de Gas Predicho', predictedGraphDesc: 'Suba una captura de la predicción para esta variante específica',
               uploadImage: 'Subir Imagen',
@@ -952,7 +1237,29 @@
               day: 'Día', variant: 'Variante', duplicate: 'Duplicar', remove: 'Eliminar',
               transportRoad: 'Transporte Terrestre', transportSea: 'Transporte Marítimo', transportAir: 'Transporte Aéreo', transportStorage: 'Almacenamiento',
               stagePlaceholder: 'ej. Granja, Transporte...', min: 'Mín', max: 'Máx',
-              metric: 'Métrico', imperial: 'Imperial', supplyChainFlow: 'Flujo de la Cadena de Suministro'
+              metric: 'Métrico', imperial: 'Imperial', supplyChainFlow: 'Flujo de la Cadena de Suministro',
+              secDefects: '5. Características del Producto y Prevención de Defectos',
+              defectsMatrixSubtitle: 'Matriz de Defectos y Prevención',
+              defectsMatrixDesc: 'Liste los defectos típicos para este producto. Para cada defecto, describa la causa fisiológica y cómo los tratamientos MHP (humedad) y MAP (gas) influyen en ellos.',
+              defectColLabel: 'Defecto', causeColLabel: 'Causa Fisiológica',
+              effectMHPColLabel: 'Efecto MHP (Humedad)', effectMAPColLabel: 'Efecto MAP (Gas)',
+              defectPlaceholder: 'ej. Pardeamiento', causePlaceholder: 'ej. Oxidación',
+              effectMHPPlaceholder: 'Efecto del tratamiento de humedad...', effectMAPPlaceholder: 'Efecto del tratamiento de gas...',
+              addDefectRow: 'Añadir Defecto', removeDefectRow: 'Eliminar defecto',
+              noDefectsAdded: 'Aún no se han añadido defectos — haga clic abajo para añadir el primero.',
+              productProperties: 'Propiedades del Producto',
+              productPropertiesDesc: 'Ventana operativa óptima para este producto. El ACP es el límite inferior de oxígeno, por debajo del cual la célula pasa a respiración anaeróbica.',
+              o2TargetLabel: 'O₂ Objetivo', o2AcpLabel: 'O₂ ACP',
+              co2TargetLabel: 'CO₂ Objetivo', co2CriticalLabel: 'CO₂ Crítico %',
+              tempCriticalLabel: 'Temp Crítica (mín)', ethyleneProfileLabel: 'Perfil de Etileno',
+              o2TargetPlaceholder: 'ej. 1.0% - 5.0%', co2TargetPlaceholder: 'ej. 5.0% - 15.0%',
+              tempCriticalPlaceholder: 'ej. 0°C - 4°C', o2AcpPlaceholder: 'ej. 0.2% - 0.4%',
+              co2CriticalPlaceholder: 'ej. 15%', ethyleneProfilePlaceholder: 'ej. Climatérico — alta producción de etileno',
+              productSheetDropTitle: 'Importar Ficha de Producto',
+              productSheetDropDesc: 'Arrastre un archivo HTML de ficha de producto PerfoTec aquí, o haga clic para subirlo. La matriz de defectos y los objetivos de gas/temperatura se rellenarán automáticamente.',
+              productSheetBrowse: 'Elegir archivo de ficha',
+              productSheetDropActive: 'Suelte el archivo para importar…',
+              productSheetParseFail: 'No se pudo procesar esta ficha. Verifique que contenga una matriz de defectos y una sección "Condiciones Óptimas".'
             }
           };
           const pt = PT[lang] || PT['en'];
@@ -983,6 +1290,11 @@
             rrO2: '', rrCO2: '', rrTemp: '', startWeight: '',
             packagingType: 'Retail', material: '', length: '', width: '', height: '',
             acpO2: '', co2Max: '', co2Shock: '', co2ShockHours: '', tempMin: '',
+            // Product-sheet derived gas / temp targets and ethylene profile.
+            // Additive — existing acpO2 / co2Max / tempMin keep their meaning
+            // (ACP, critical CO₂ %, critical min temp). The *Target fields are
+            // the optimal operating window from the imported product sheet.
+            o2Target: '', co2Target: '', ethyleneProfile: '',
             totalDuration: '', retailOpenDays: '', transportMode: '',
             criteria: [],
             technologies: [],
@@ -1009,15 +1321,6 @@
             {
               id: 1, name: 'Control',
               specs: { packaging: 'Retail', material: 'BOPP', length: '', width: '', height: '', holes: '2', sampleCount: 3 },
-              measurements: [
-                { day: 0, measure: [], open: [], evaluate: [] }, 
-                { day: 5, measure: [], open: [], evaluate: [] }
-              ],
-              predictedImage: null 
-            },
-            {
-              id: 2, name: 'PerfoTec Laser',
-              specs: { packaging: 'Retail', material: 'BOPP', length: '', width: '', height: '', holes: '4', sampleCount: 3 },
               measurements: [
                 { day: 0, measure: [], open: [], evaluate: [] }, 
                 { day: 5, measure: [], open: [], evaluate: [] }
@@ -1279,7 +1582,12 @@
               criteria: p.qualityCriteria || [],
               startImage: p.photo || null,
               startWeight: p.weight || prev.startWeight,
-              technologies: p.technologies || prev.technologies || []
+              technologies: p.technologies || prev.technologies || [],
+              packagingType: p.packagingType || prev.packagingType || 'Retail',
+              material: p.material || prev.material || '',
+              length: p.length || prev.length || '',
+              width: p.width || prev.width || '',
+              height: p.height || prev.height || ''
             }));
             if (p.supplyChain) setSupplyChain(p.supplyChain);
             setGroups(prev => {
@@ -1464,6 +1772,196 @@
             }));
           };
 
+          // Defects & Prevention Matrix — drives the Section 3 table in the
+          // print preview (`project.defectsMatrix`). Each row has a stable id
+          // so React keys stay valid across reorders/edits.
+          const addDefectRow = () => setProject(p => ({
+            ...p,
+            defectsMatrix: [...(p.defectsMatrix || []), { id: Date.now(), defect: '', cause: '', effectMHP: '', effectMAP: '' }]
+          }));
+
+          // === PRODUCT-SHEET IMPORTER ===
+          // Parses a PerfoTec product-sheet HTML (the .htm files under
+          // /OneDrive/.../Product Sheets/) and extracts the Defects matrix +
+          // optimal O₂/CO₂/Temp ranges + ACP value, in the user's selected
+          // language.
+          //
+          // Robust by design: every selector is wrapped so a missing section
+          // is silently skipped instead of crashing the import. Returns a
+          // partial-update object that the caller merges into project state.
+
+          // Extract the inline `const translations = { nl: {}, en: {...}, es: {...} };`
+          // object literal from the product-sheet script. Uses balanced-brace
+          // walking so we don't trip over nested objects, and skips over
+          // string literals so braces inside translation text don't mismatch.
+          const extractProductSheetTranslations = (htmlText) => {
+            const startMarker = 'const translations';
+            const startIdx = htmlText.indexOf(startMarker);
+            if (startIdx === -1) return null;
+            const eqIdx = htmlText.indexOf('=', startIdx);
+            if (eqIdx === -1) return null;
+            const braceStart = htmlText.indexOf('{', eqIdx);
+            if (braceStart === -1) return null;
+            let depth = 0, i = braceStart, inStr = null, escaped = false;
+            while (i < htmlText.length) {
+              const c = htmlText[i];
+              if (escaped) { escaped = false; i++; continue; }
+              if (inStr) {
+                if (c === '\\') { escaped = true; i++; continue; }
+                if (c === inStr) inStr = null;
+                i++; continue;
+              }
+              if (c === '"' || c === "'" || c === '`') { inStr = c; i++; continue; }
+              if (c === '{') depth++;
+              else if (c === '}') { depth--; if (depth === 0) { i++; break; } }
+              i++;
+            }
+            const objLit = htmlText.substring(braceStart, i);
+            try {
+              // Object literal evaluation — the source is user-supplied but
+              // local to their machine; same trust level as the imported file.
+              return new Function('return ' + objLit)();
+            } catch (e) {
+              return null;
+            }
+          };
+
+          // Strip HTML tags (translation values may contain inline <strong>,
+          // <span>, <br>, …). Returns plain text with whitespace collapsed.
+          const stripHtml = (html) => {
+            if (!html) return '';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = String(html);
+            return tmp.textContent.replace(/\s+/g, ' ').trim();
+          };
+
+          const parseProductSheet = (htmlText, targetLang) => {
+            const result = { defects: [], o2Target: '', co2Target: '', tempCritical: '', o2Acp: '' };
+            if (!htmlText || typeof htmlText !== 'string') return result;
+            try {
+              const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+
+              // Pull the per-language translation dictionary so we can resolve
+              // each cell's `data-translate` key in the user's active language.
+              // Falls back to whatever is already in the DOM (typically Dutch)
+              // when a language entry is absent or empty.
+              const allTrans = extractProductSheetTranslations(htmlText);
+              const wanted = targetLang || 'nl';
+              const langDict = (allTrans && allTrans[wanted] && Object.keys(allTrans[wanted]).length > 0)
+                ? allTrans[wanted]
+                : null;
+
+              // Resolve a single <td> via its `data-translate` key.
+              const cellText = (td) => {
+                const key = td.getAttribute && td.getAttribute('data-translate');
+                if (key && langDict && langDict[key]) return stripHtml(langDict[key]);
+                return td.textContent.replace(/\s+/g, ' ').trim();
+              };
+
+              // Defects matrix — #common-defects table.data-table tbody tr
+              const rows = doc.querySelectorAll('#common-defects table.data-table tbody tr, table.data-table tbody tr');
+              const seen = new Set();
+              rows.forEach((tr, i) => {
+                const tds = tr.querySelectorAll('td');
+                if (tds.length < 4) return;
+                const defect = cellText(tds[0]);
+                const cause = cellText(tds[1]);
+                const effectMHP = cellText(tds[2]);
+                const effectMAP = cellText(tds[3]);
+                // Drop empty / duplicate rows (some sheets reuse the table
+                // markup with placeholders).
+                if (!defect && !cause) return;
+                const key = defect + '|' + cause;
+                if (seen.has(key)) return;
+                seen.add(key);
+                result.defects.push({
+                  id: Date.now() + i,
+                  defect, cause, effectMHP, effectMAP
+                });
+              });
+
+              // Optimal conditions — section#optimal-conditions .condition-block
+              // The numeric values (e.g. "1.0% - 5.0%") are language-independent
+              // and sit in `.condition-value`; only category-matching is needed.
+              const blocks = doc.querySelectorAll('#optimal-conditions .condition-block, .condition-block');
+              blocks.forEach(block => {
+                const title = (block.querySelector('.condition-title')?.textContent || '').trim();
+                const value = (block.querySelector('.condition-value')?.textContent || '').replace(/\s+/g, ' ').trim();
+                if (!value) return;
+                if (/O₂|O2/i.test(title) && !/CO/i.test(title)) result.o2Target = value;
+                else if (/CO₂|CO2/i.test(title)) result.co2Target = value;
+                else if (/Temp/i.test(title)) result.tempCritical = value;
+              });
+
+              // ACP — pick numeric range from the res_box_text paragraph in
+              // the user's language if available, else from the DOM. Numbers
+              // themselves are language-independent.
+              let acpText = '';
+              if (langDict && langDict.res_box_text) {
+                acpText = stripHtml(langDict.res_box_text);
+              } else {
+                const acpHost = doc.querySelector('[data-translate="res_box_text"]') ||
+                                doc.querySelector('#anaerobic-respiration p') ||
+                                doc.querySelector('section .text-xs.text-gray-700');
+                acpText = acpHost?.textContent || '';
+              }
+              const acpMatch = acpText.match(/(\d+(?:[.,]\d+)?)\s*[-–]\s*(\d+(?:[.,]\d+)?)\s*%/);
+              if (acpMatch) result.o2Acp = `${acpMatch[1].replace(',', '.')}% - ${acpMatch[2].replace(',', '.')}%`;
+            } catch (e) {
+              // Parsing failed — return whatever we got. Caller will alert user.
+            }
+            return result;
+          };
+
+          // Apply parsed product-sheet data to project state. Only overwrites
+          // fields that the parser actually populated, so any manually-typed
+          // values for fields the sheet doesn't carry are preserved.
+          const applyProductSheet = (parsed) => {
+            if (!parsed) return;
+            setProject(p => ({
+              ...p,
+              ...(parsed.o2Target ? { o2Target: parsed.o2Target } : {}),
+              ...(parsed.co2Target ? { co2Target: parsed.co2Target } : {}),
+              ...(parsed.tempCritical ? { tempMin: parsed.tempCritical } : {}),
+              ...(parsed.o2Acp ? { acpO2: parsed.o2Acp } : {}),
+              defectsMatrix: parsed.defects && parsed.defects.length > 0 ? parsed.defects : (p.defectsMatrix || [])
+            }));
+          };
+
+          // File / drag-drop handlers for product sheets.
+          const handleProductSheetFile = (file) => {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              // Use the currently-active UI language so the matrix is
+              // imported in the same language the user is working in.
+              const parsed = parseProductSheet(ev.target?.result || '', lang);
+              if (parsed.defects.length === 0 && !parsed.o2Target && !parsed.co2Target && !parsed.tempCritical) {
+                alert(pt.productSheetParseFail || 'Could not parse this product sheet.');
+                return;
+              }
+              applyProductSheet(parsed);
+            };
+            reader.onerror = () => alert(pt.productSheetParseFail || 'Could not read this product sheet.');
+            reader.readAsText(file);
+          };
+          const [productSheetDragOver, setProductSheetDragOver] = useState(false);
+          const handleProductSheetDrop = (e) => {
+            e.preventDefault();
+            setProductSheetDragOver(false);
+            const file = e.dataTransfer?.files?.[0];
+            if (file) handleProductSheetFile(file);
+          };
+
+          const removeDefectRow = (rowId) => setProject(p => ({
+            ...p,
+            defectsMatrix: (p.defectsMatrix || []).filter(r => r.id !== rowId)
+          }));
+          const updateDefectRow = (rowId, field, value) => setProject(p => ({
+            ...p,
+            defectsMatrix: (p.defectsMatrix || []).map(r => r.id === rowId ? { ...r, [field]: value } : r)
+          }));
+
           // Supply Chain
           const addChainStep = () => setSupplyChain([...supplyChain, { stage: '', tempStart: '', tempEnd: '', daysStart: '', daysEnd: '', action: 'none' }]);
           const updateChainStep = (i, f, v) => { const n = [...supplyChain]; n[i][f] = v; setSupplyChain(n); };
@@ -1477,10 +1975,16 @@
             setGroups([...groups, { 
                 id: newId, 
                 name: `Variant ${groups.length + 1}`, 
-                specs: { ...groups[0].specs }, 
-                measurements: [
-                   { day: 0, measure: [], open: [], evaluate: [] }
-                ],
+                specs: { 
+                    ...groups[0].specs,
+                    packaging: project.packagingType || 'Retail',
+                    material: project.material || '',
+                    length: project.length || '',
+                    width: project.width || '',
+                    height: project.height || '',
+                    startWeight: project.startWeight || groups[0].specs.startWeight || ''
+                }, 
+                measurements: groups[0].measurements.map(m => ({ day: m.day, measure: [], open: [], evaluate: [] })),
                 predictedImage: null
             }]);
             setActiveGroupId(newId);
@@ -1524,14 +2028,29 @@
           };
 
           // Timeline Events Handling
+          //
+          // Identity is by INDEX, not by day-value. Day-value identity is broken
+          // for two reasons:
+          //   1. While the user is mid-typing, two cards can briefly share the
+          //      same value (e.g. "2" before "21"), collapsing into one row.
+          //   2. Auto-sorting on every keystroke would shuffle the array under
+          //      the cursor: typing "2" into card 3 (was day 15) reorders to
+          //      [0, 2, 14] and the input the user is in now displays "14".
+          // Sorting happens only on commit (add) and at consumption sites
+          // (preview / report), never during typing.
           const addEvaluationDay = (groupId) => {
               setGroups(prev => prev.map(g => {
                   if (g.id !== groupId) return g;
-                  const lastDay = g.measurements?.length > 0 ? Math.max(...g.measurements.map(m => parseFloat(m.day))) : 0;
-                  
+                  const numericDays = (g.measurements || [])
+                      .map(m => parseFloat(m.day))
+                      .filter(d => !isNaN(d));
+                  const lastDay = numericDays.length > 0 ? Math.max(...numericDays) : 0;
+
                   return {
                       ...g,
-                      measurements: [...(g.measurements || []), { 
+                      // Sort once after appending so the freshly added card sits
+                      // chronologically at first; subsequent edits do NOT re-sort.
+                      measurements: [...(g.measurements || []), {
                           day: lastDay + 1,
                           measure: [],
                           open: [],
@@ -1541,23 +2060,27 @@
               }));
           };
 
-          const removeEvaluationDay = (groupId, dayToRemove) => {
+          const removeEvaluationDay = (groupId, indexToRemove) => {
               setGroups(prev => prev.map(g => {
                   if (g.id !== groupId) return g;
                   return {
                       ...g,
-                      measurements: (g.measurements || []).filter(m => parseFloat(m.day) !== parseFloat(dayToRemove))
+                      measurements: (g.measurements || []).filter((_, i) => i !== indexToRemove)
                   };
               }));
           };
-          
-          const updateEvaluationDay = (groupId, oldDay, newDayValue) => {
-              const newD = parseFloat(newDayValue) || 0;
+
+          const updateEvaluationDay = (groupId, indexToUpdate, newDayValue) => {
               setGroups(prev => prev.map(g => {
                   if (g.id !== groupId) return g;
                   return {
                       ...g,
-                      measurements: (g.measurements || []).map(m => parseFloat(m.day) === parseFloat(oldDay) ? { ...m, day: newD } : m).sort((a,b) => parseFloat(a.day) - parseFloat(b.day))
+                      // Keep the raw input string in state so empty / partial
+                      // values (e.g. "" while clearing the field) round-trip
+                      // without being coerced to 0. Consumers parseFloat().
+                      measurements: (g.measurements || []).map((m, i) =>
+                          i === indexToUpdate ? { ...m, day: newDayValue } : m
+                      )
                   };
               }));
           };
@@ -1578,7 +2101,7 @@
           };
 
           if (isPreview) {
-            return <PrintPreview clientInfo={clientInfo} project={project} groups={groups} proposal={proposal} supplyChain={supplyChain} onBack={() => setIsPreview(false)} />;
+            return <PrintPreview clientInfo={clientInfo} project={project} groups={groups} proposal={proposal} supplyChain={supplyChain} lang={lang} onBack={() => setIsPreview(false)} />;
           }
 
           // --- EDITOR VIEW ---
@@ -2206,6 +2729,122 @@
                        </div>
                     </section>
 
+                    {/* ========== DEEL 6 — DEFECTS & PREVENTION MATRIX ========== */}
+                    <section className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
+                       <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: BRAND.colors.green }}></div>
+                       <div className="flex items-center justify-between border-b-2 border-slate-100 pb-6 mb-6">
+                         <div className="flex items-center gap-4">
+                           <div className="p-3 bg-green-50 rounded-xl">
+                             <AlertTriangle size={28} color={BRAND.colors.green} />
+                           </div>
+                           <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{pt.secDefects}</h2>
+                         </div>
+                       </div>
+
+                       {/* === PRODUCT-SHEET DROP ZONE === */}
+                       <div
+                         onDragOver={e => { e.preventDefault(); if (!productSheetDragOver) setProductSheetDragOver(true); }}
+                         onDragLeave={() => setProductSheetDragOver(false)}
+                         onDrop={handleProductSheetDrop}
+                         className={`mb-8 border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col sm:flex-row items-center gap-5 ${productSheetDragOver ? 'border-green-500 bg-green-50' : 'border-slate-300 bg-slate-50/60 hover:border-green-300 hover:bg-green-50/30'}`}
+                       >
+                         <div className={`shrink-0 w-14 h-14 rounded-xl flex items-center justify-center shadow-sm ${productSheetDragOver ? 'bg-green-100' : 'bg-white border border-slate-200'}`}>
+                           <FileArchive size={28} color={BRAND.colors.green} />
+                         </div>
+                         <div className="flex-1 text-center sm:text-left">
+                           <div className="font-extrabold text-slate-800 text-base">{productSheetDragOver ? pt.productSheetDropActive : pt.productSheetDropTitle}</div>
+                           <div className="text-sm text-slate-500 mt-1 leading-relaxed">{pt.productSheetDropDesc}</div>
+                         </div>
+                         <label className="cursor-pointer bg-white border border-slate-300 text-slate-700 px-5 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 hover:border-green-400 transition-all shrink-0 whitespace-nowrap shadow-sm flex items-center gap-2">
+                           <Upload size={16} className="text-green-700"/>
+                           {pt.productSheetBrowse}
+                           <input
+                             type="file"
+                             accept=".htm,.html,text/html"
+                             className="hidden"
+                             onClick={e => { e.target.value = null; }}
+                             onChange={e => handleProductSheetFile(e.target.files?.[0])}
+                           />
+                         </label>
+                       </div>
+
+                       {/* === PRODUCT PROPERTIES GRID === */}
+                       <div className="mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                         <h3 className="font-extrabold text-base text-slate-800 mb-1">{pt.productProperties}</h3>
+                         <p className="text-xs text-slate-500 mb-5 leading-relaxed">{pt.productPropertiesDesc}</p>
+                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                           <div>
+                             <label className={labelClass}>{pt.o2TargetLabel}</label>
+                             <input type="text" className={inputClass} placeholder={pt.o2TargetPlaceholder} value={project.o2Target || ''} onChange={e => handleProjectChange('o2Target', e.target.value)} />
+                           </div>
+                           <div>
+                             <label className={labelClass}>{pt.o2AcpLabel}</label>
+                             <input type="text" className={inputClass} placeholder={pt.o2AcpPlaceholder} value={project.acpO2 || ''} onChange={e => handleProjectChange('acpO2', e.target.value)} />
+                           </div>
+                           <div className="hidden lg:block"></div>
+                           <div>
+                             <label className={labelClass}>{pt.co2TargetLabel}</label>
+                             <input type="text" className={inputClass} placeholder={pt.co2TargetPlaceholder} value={project.co2Target || ''} onChange={e => handleProjectChange('co2Target', e.target.value)} />
+                           </div>
+                           <div>
+                             <label className={labelClass}>{pt.co2CriticalLabel}</label>
+                             <input type="text" className={inputClass} placeholder={pt.co2CriticalPlaceholder} value={project.co2Max || ''} onChange={e => handleProjectChange('co2Max', e.target.value)} />
+                           </div>
+                           <div className="hidden lg:block"></div>
+                           <div>
+                             <label className={labelClass}>{pt.tempCriticalLabel}</label>
+                             <input type="text" className={inputClass} placeholder={pt.tempCriticalPlaceholder} value={project.tempMin || ''} onChange={e => handleProjectChange('tempMin', e.target.value)} />
+                           </div>
+                           <div className="sm:col-span-2">
+                             <label className={labelClass}>{pt.ethyleneProfileLabel}</label>
+                             <input type="text" className={inputClass} placeholder={pt.ethyleneProfilePlaceholder} value={project.ethyleneProfile || ''} onChange={e => handleProjectChange('ethyleneProfile', e.target.value)} />
+                           </div>
+                         </div>
+                       </div>
+
+                       <h3 className="font-extrabold text-base text-slate-800 mb-1">{pt.defectsMatrixSubtitle}</h3>
+                       <p className="text-sm text-slate-500 mb-6 leading-relaxed">{pt.defectsMatrixDesc}</p>
+
+                       <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                         <table className="w-full text-sm bg-white">
+                           <thead className="bg-slate-100 border-b border-slate-200">
+                             <tr className="text-left text-slate-600 uppercase tracking-wider text-[10px] font-bold">
+                               <th className="p-3" style={{ color: '#004B87' }}>{pt.defectColLabel}</th>
+                               <th className="p-3" style={{ color: '#004B87' }}>{pt.causeColLabel}</th>
+                               <th className="p-3" style={{ color: '#5B9BD5' }}>{pt.effectMHPColLabel}</th>
+                               <th className="p-3" style={{ color: BRAND.colors.green }}>{pt.effectMAPColLabel}</th>
+                               <th className="p-3 w-10"></th>
+                             </tr>
+                           </thead>
+                           <tbody className="divide-y divide-slate-100">
+                             {(project.defectsMatrix || []).length === 0 && (
+                               <tr>
+                                 <td colSpan="5" className="p-6 text-center text-slate-400 italic text-sm">{pt.noDefectsAdded}</td>
+                               </tr>
+                             )}
+                             {(project.defectsMatrix || []).map(row => (
+                               <tr key={row.id} className="hover:bg-slate-50 transition-colors align-top">
+                                 <td className="p-2"><input type="text" className={`${inputClass} font-bold`} placeholder={pt.defectPlaceholder} value={row.defect || ''} onChange={e => updateDefectRow(row.id, 'defect', e.target.value)} /></td>
+                                 <td className="p-2"><input type="text" className={inputClass} placeholder={pt.causePlaceholder} value={row.cause || ''} onChange={e => updateDefectRow(row.id, 'cause', e.target.value)} /></td>
+                                 <td className="p-2"><input type="text" className={inputClass} placeholder={pt.effectMHPPlaceholder} value={row.effectMHP || ''} onChange={e => updateDefectRow(row.id, 'effectMHP', e.target.value)} /></td>
+                                 <td className="p-2"><input type="text" className={inputClass} placeholder={pt.effectMAPPlaceholder} value={row.effectMAP || ''} onChange={e => updateDefectRow(row.id, 'effectMAP', e.target.value)} /></td>
+                                 <td className="p-2 text-center">
+                                   <button onClick={() => removeDefectRow(row.id)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title={pt.removeDefectRow}>
+                                     <Trash2 size={18}/>
+                                   </button>
+                                 </td>
+                               </tr>
+                             ))}
+                           </tbody>
+                         </table>
+                       </div>
+
+                       <button onClick={addDefectRow} className="w-full py-4 mt-4 border-2 border-dashed border-green-200 bg-green-50/50 hover:bg-green-50 text-green-700 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
+                         <div className="bg-white p-1.5 rounded-lg shadow-sm"><Plus size={16} /></div>
+                         {pt.addDefectRow}
+                       </button>
+                    </section>
+
                   </div>
                 )}
 
@@ -2247,8 +2886,8 @@
                                   {(groups[0]?.measurements || []).map((m, i) => (
                                       <div key={i} className="flex gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-200 shadow-sm">
                                           <span className="text-sm font-extrabold text-slate-600 ml-2">{pt.day}</span>
-                                          <input type="number" className="w-16 bg-white border border-slate-300 text-blue-700 text-center text-lg font-bold rounded-lg py-1 focus:ring-2 focus:ring-blue-500 outline-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]" value={m.day} onChange={e => updateEvaluationDay(groups[0].id, m.day, e.target.value)} />
-                                          {i > 0 && <button onClick={() => removeEvaluationDay(groups[0].id, m.day)} className="text-red-400 hover:text-red-600 p-1.5 bg-white rounded-lg border shadow-sm"><X size={16}/></button>}
+                                          <input type="number" className="w-16 bg-white border border-slate-300 text-blue-700 text-center text-lg font-bold rounded-lg py-1 focus:ring-2 focus:ring-blue-500 outline-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]" value={m.day ?? ''} onChange={e => updateEvaluationDay(groups[0].id, i, e.target.value)} />
+                                          {i > 0 && <button onClick={() => removeEvaluationDay(groups[0].id, i)} className="text-red-400 hover:text-red-600 p-1.5 bg-white rounded-lg border shadow-sm"><X size={16}/></button>}
                                       </div>
                                   ))}
                               </div>
@@ -2319,9 +2958,14 @@
                                <div>
                                  <h3 className="font-extrabold text-2xl mb-8 text-slate-800 border-b-2 border-slate-100 pb-4">{pt.variantConfig}</h3>
                                  
-                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
                                    <div><label className={labelClass}>{pt.variantName}</label><input type="text" className={`${inputClass} text-lg font-bold`} value={groups.find(g => g.id === activeGroupId).name || ''} onChange={(e) => handleGroupChange(activeGroupId, 'name', null, e.target.value)} /></div>
                                    <div><label className={labelClass}>{pt.packagingType}</label><select className={inputClass} value={groups.find(g => g.id === activeGroupId).specs.packaging || ''} onChange={(e) => handleGroupChange(activeGroupId, 'specs', 'packaging', e.target.value)}>{PACKAGING_TYPES.map(type => <option key={type} value={type}>{getI18nLabel(PACKAGING_TYPES_I18N, type, lang)}</option>)}</select></div>
+                                   <div><label className={labelClass}>{pt.atmosphereStrategy}</label><select className={inputClass} value={groups.find(g => g.id === activeGroupId).specs.atmosphereStrategy || 'MAP'} onChange={(e) => handleGroupChange(activeGroupId, 'specs', 'atmosphereStrategy', e.target.value)}>
+                                     <option value="MAP">{pt.optMAP}</option>
+                                     <option value="MHP">{pt.optMHP}</option>
+                                     <option value="Open">{pt.optOpen}</option>
+                                   </select></div>
                                  </div>
                                  
                                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-8 rounded-2xl border border-slate-200 shadow-sm mb-10">
@@ -2337,8 +2981,9 @@
                                      <div><label className="text-xs text-blue-700 font-extrabold uppercase tracking-wider mb-2 block">{pt.samplesPerMeasurement}</label><input type="number" min="1" className={`${inputClass} bg-white border-blue-300 ring-2 ring-blue-50 font-extrabold text-blue-900 text-lg`} value={groups.find(g => g.id === activeGroupId).specs.sampleCount || 3} onChange={(e) => handleSampleCountChange(activeGroupId, parseInt(e.target.value))} /></div>
                                    </div>
                                  </div>
-                                 
-                                 <div className="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm mb-10">
+                               </div>
+
+                               <div className="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm mb-10">
                                     <div className="flex flex-col mb-6">
                                       <h4 className="font-extrabold text-xl text-slate-800 mb-1">{pt.timelineEvents}</h4>
                                       <p className="text-sm text-slate-500">{pt.timelineDesc}</p>
@@ -2348,7 +2993,9 @@
                                         <thead className="bg-slate-100 border-b border-slate-200">
                                           <tr className="text-left text-slate-600 uppercase tracking-wider text-[10px] font-bold">
                                             <th className="p-4 w-20 text-center">{pt.thDay}</th>
-                                            <th className="p-4 border-l border-slate-200">{pt.thMeasure}</th>
+                                            <th className="p-4 border-l border-slate-200">
+                                              {(groups.find(g => g.id === activeGroupId).specs.atmosphereStrategy || 'MAP') === 'MAP' ? pt.thMeasure : pt.thMeasureWeight}
+                                            </th>
                                             <th className="p-4 border-l border-slate-200 text-orange-700">{pt.thOpen}</th>
                                             <th className="p-4 border-l border-slate-200 text-green-700">{pt.thEvaluate}</th>
                                           </tr>
@@ -2387,43 +3034,46 @@
                                     </div>
                                  </div>
 
-                                 <div className="border-2 border-dashed border-blue-200 bg-blue-50 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
-                                    <div className="flex items-center gap-5">
-                                       <div className="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0">
-                                          <LineChart size={28} className="text-blue-500" />
+                                 {(groups.find(g => g.id === activeGroupId).specs.atmosphereStrategy || 'MAP') === 'MAP' && (
+                                    <>
+                                    <div className="border-2 border-dashed border-blue-200 bg-blue-50 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
+                                       <div className="flex items-center gap-5">
+                                          <div className="w-14 h-14 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0">
+                                             <LineChart size={28} className="text-blue-500" />
+                                          </div>
+                                          <div>
+                                            <div className="font-extrabold text-lg text-blue-950 mb-1">{pt.predictedGraph}</div>
+                                            <div className="text-sm font-medium text-blue-700">{pt.predictedGraphDesc}</div>
+                                          </div>
                                        </div>
-                                       <div>
-                                         <div className="font-extrabold text-lg text-blue-950 mb-1">{pt.predictedGraph}</div>
-                                         <div className="text-sm font-medium text-blue-700">{pt.predictedGraphDesc}</div>
+                                       <label className="cursor-pointer bg-white border border-blue-200 text-blue-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-100 hover:border-blue-300 transition-all shrink-0 whitespace-nowrap shadow-sm">
+                                          {pt.uploadImage}
+                                          <input 
+                                            type="file" 
+                                            accept="image/*" 
+                                            className="hidden" 
+                                            onClick={(e) => {
+                                               const g = groups.find(x => x.id === activeGroupId);
+                                               if (g && g.predictedImage) {
+                                                 e.preventDefault();
+                                                 setPendingImageReplace({ groupId: activeGroupId, result: null });
+                                               }
+                                            }} 
+                                            onChange={(e) => handlePredictedImageUpload(e, activeGroupId)} 
+                                          />
+                                       </label>
+                                    </div>
+                                    
+                                    {groups.find(g => g.id === activeGroupId).predictedImage && (
+                                       <div className="mt-6 border border-slate-200 rounded-2xl p-4 bg-white max-w-full relative group shadow-sm inline-block">
+                                         <img src={groups.find(g => g.id === activeGroupId).predictedImage} className="max-h-[300px] w-auto object-contain rounded-xl" />
+                                         <button onClick={() => removePredictedImage(activeGroupId)} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-red-600 hover:scale-110">
+                                            <Trash2 size={16}/>
+                                         </button>
                                        </div>
-                                    </div>
-                                    <label className="cursor-pointer bg-white border border-blue-200 text-blue-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-100 hover:border-blue-300 transition-all shrink-0 whitespace-nowrap shadow-sm">
-                                       {pt.uploadImage}
-                                       <input 
-                                         type="file" 
-                                         accept="image/*" 
-                                         className="hidden" 
-                                         onClick={(e) => {
-                                            const g = groups.find(x => x.id === activeGroupId);
-                                            if (g && g.predictedImage) {
-                                              e.preventDefault();
-                                              setPendingImageReplace({ groupId: activeGroupId, result: null });
-                                            }
-                                         }} 
-                                         onChange={(e) => handlePredictedImageUpload(e, activeGroupId)} 
-                                       />
-                                    </label>
-                                 </div>
-                                 
-                                 {groups.find(g => g.id === activeGroupId).predictedImage && (
-                                    <div className="mt-6 border border-slate-200 rounded-2xl p-4 bg-white max-w-full relative group shadow-sm inline-block">
-                                      <img src={groups.find(g => g.id === activeGroupId).predictedImage} className="max-h-[300px] w-auto object-contain rounded-xl" />
-                                      <button onClick={() => removePredictedImage(activeGroupId)} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-red-600 hover:scale-110">
-                                         <Trash2 size={16}/>
-                                      </button>
-                                    </div>
+                                    )}
+                                    </>
                                  )}
-                               </div>
                              </>
                            )}
                         </div>
