@@ -293,6 +293,8 @@
             // Section 3
             o2MinAcp: 'O₂ min (ACP):', co2MaxLabel: 'CO₂ max:',
             co2ShockLabel: 'CO₂ shock:', tempMinLabel: 'Temp min:',
+            o2TargetPreviewLabel: 'O₂ target:', co2TargetPreviewLabel: 'CO₂ target:',
+            ethylenePreviewLabel: 'Ethylene profile:',
             co2ShockHintTemplate: 'Drop < {max}% within {hours}h',
             maxFallback: 'max',
             defectsMatrixTitle: 'Defects & Prevention Matrix',
@@ -358,6 +360,8 @@
             technologyLabel: 'Technologie :',
             o2MinAcp: 'O₂ min (ACP):', co2MaxLabel: 'CO₂ max:',
             co2ShockLabel: 'CO₂ shock:', tempMinLabel: 'Temp min:',
+            o2TargetPreviewLabel: 'O₂ target:', co2TargetPreviewLabel: 'CO₂ target:',
+            ethylenePreviewLabel: 'Ethyleen profiel:',
             co2ShockHintTemplate: 'Daling < {max}% binnen {hours}u',
             maxFallback: 'max',
             defectsMatrixTitle: 'Defecten & Preventiematrix',
@@ -419,6 +423,8 @@
             technologyLabel: 'Tecnología :',
             o2MinAcp: 'O₂ mín (ACP):', co2MaxLabel: 'CO₂ máx:',
             co2ShockLabel: 'Choque CO₂:', tempMinLabel: 'Temp mín:',
+            o2TargetPreviewLabel: 'O₂ objetivo:', co2TargetPreviewLabel: 'CO₂ objetivo:',
+            ethylenePreviewLabel: 'Perfil de etileno:',
             co2ShockHintTemplate: 'Caída < {max}% en {hours}h',
             maxFallback: 'máx',
             defectsMatrixTitle: 'Matriz de Defectos y Prevención',
@@ -475,7 +481,7 @@
         };
 
         // --- PRINT PREVIEW ---
-        const PrintPreview = ({ clientInfo, project, groups, proposal, supplyChain, lang, onBack }) => {
+        const PrintPreview = ({ clientInfo, project, groups, proposal, supplyChain, lang, unitSystem, onBack }) => {
           const pv = PV[lang] || PV.en;
           let allTemps = [];
           const chain = supplyChain || [];
@@ -670,11 +676,14 @@
                 <div className="pt-4">
                   <h2 className={reportTitleClass} style={reportTitleStyle}>{pv.sec3}</h2>
 
-                  <div className="mb-8 print:mb-3 grid grid-cols-4 gap-4 print:gap-2 text-sm print:text-xs">
+                  <div className="mb-8 print:mb-3 grid grid-cols-2 md:grid-cols-3 print:grid-cols-3 gap-4 print:gap-2 text-sm print:text-xs">
+                      {project.o2Target && <div className="bg-emerald-50 p-4 print:p-2 rounded-xl border border-emerald-100 shadow-sm"><strong className="text-emerald-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.o2TargetPreviewLabel}</strong><span className="text-xl print:text-base font-extrabold text-emerald-700">{project.o2Target}</span></div>}
                       {project.acpO2 && <div className="bg-blue-50 p-4 print:p-2 rounded-xl border border-blue-100 shadow-sm"><strong className="text-blue-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.o2MinAcp}</strong><span className="text-xl print:text-base font-extrabold text-[#004B87]">{project.acpO2}</span></div>}
+                      {project.co2Target && <div className="bg-cyan-50 p-4 print:p-2 rounded-xl border border-cyan-100 shadow-sm"><strong className="text-cyan-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.co2TargetPreviewLabel}</strong><span className="text-xl print:text-base font-extrabold text-cyan-700">{project.co2Target}</span></div>}
                       {project.co2Max && <div className="bg-red-50 p-4 print:p-2 rounded-xl border border-red-100 shadow-sm"><strong className="text-red-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.co2MaxLabel}</strong><span className="text-xl print:text-base font-extrabold text-red-600">{project.co2Max}</span></div>}
                       {project.co2Shock && <div className="bg-orange-50 p-4 print:p-2 rounded-xl border border-orange-100 shadow-sm"><strong className="text-orange-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.co2ShockLabel}</strong><span className="text-xl print:text-base font-extrabold text-orange-600">{project.co2Shock}</span>{project.co2ShockHours && <div className="text-xs print:text-[9px] text-orange-600/80 mt-1 font-medium leading-tight">{fillTemplate(pv.co2ShockHintTemplate, { max: project.co2Max || pv.maxFallback, hours: project.co2ShockHours })}</div>}</div>}
                       {project.tempMin && <div className="bg-slate-50 p-4 print:p-2 rounded-xl border border-slate-200 shadow-sm"><strong className="text-slate-500 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.tempMinLabel}</strong><span className="text-xl print:text-base font-extrabold text-slate-800">{project.tempMin}</span></div>}
+                      {project.ethyleneProfile && <div className="bg-purple-50 p-4 print:p-2 rounded-xl border border-purple-100 shadow-sm col-span-2 md:col-span-3 print:col-span-3"><strong className="text-purple-800 block mb-1 uppercase tracking-wide text-xs print:text-[9px]">{pv.ethylenePreviewLabel}</strong><span className="text-base print:text-sm font-bold text-purple-900">{project.ethyleneProfile}</span></div>}
                   </div>
 
                   {project.defectsMatrix && project.defectsMatrix.length > 0 && (
@@ -863,23 +872,47 @@
                      {proposal?.requirements && (
                          <div className="break-inside-avoid">
                              {(() => {
-                               const totalRequiredWeightGrams = groups.reduce((total, g) => {
-                                 const weightPerSample = parseFloat(project.startWeight) || 0;
-                                 const totalSamples = parseFloat(g.specs?.sampleCount) || 0;
-                                 return total + (weightPerSample * totalSamples);
-                               }, 0);
-                               const totalRequiredWeightKg = (totalRequiredWeightGrams / 1000).toFixed(1);
+                               // The startWeight input's unit is determined by
+                               // project.packagingType (bulk → kg/lb, retail →
+                               // g/oz). Earlier code blindly treated the value
+                               // as grams and divided by 1000, which collapsed
+                               // 4 × 100 kg pallets to 0.4 kg in the report.
+                               // Here we compute in a base unit (g for metric,
+                               // oz for imperial) so all groups can be summed
+                               // even with mixed packaging, then convert once
+                               // at the end to a single display unit.
+                               const isImperial = unitSystem === 'imperial';
+                               const projIsBulk = project.packagingType === 'Cube crate' || project.packagingType === 'Pallet';
+                               // Conversion to base unit (g or oz) per source unit:
+                               //   metric bulk:    kg  → × 1000  → g
+                               //   metric retail:  g   → × 1     → g
+                               //   imperial bulk:  lb  → × 16    → oz
+                               //   imperial retail: oz → × 1     → oz
+                               const startWeight = parseFloat(project.startWeight) || 0;
+                               const weightInBase = isImperial
+                                 ? (projIsBulk ? startWeight * 16 : startWeight)
+                                 : (projIsBulk ? startWeight * 1000 : startWeight);
 
-                               const totalSamplesCount = groups.reduce((total, g) => {
-                                 return total + (parseFloat(g.specs?.sampleCount) || 0);
-                               }, 0);
+                               const totalSamplesCount = groups.reduce((total, g) => total + (parseFloat(g.specs?.sampleCount) || 0), 0);
+                               const totalBase = weightInBase * totalSamplesCount;
+
+                               // Display unit: pick kg/lb when the total clears
+                               // a sensible threshold, otherwise stay in g/oz.
+                               let displayValue, displayUnit;
+                               if (isImperial) {
+                                 if (totalBase >= 16) { displayValue = (totalBase / 16).toFixed(1); displayUnit = 'lb'; }
+                                 else { displayValue = totalBase.toFixed(1); displayUnit = 'oz'; }
+                               } else {
+                                 if (totalBase >= 1000) { displayValue = (totalBase / 1000).toFixed(1); displayUnit = 'kg'; }
+                                 else { displayValue = totalBase.toFixed(0); displayUnit = 'g'; }
+                               }
 
                                return (
                                  <div className="mb-6 print:mb-2 bg-blue-50 border border-blue-200 p-5 print:p-3 text-sm print:text-xs text-blue-900 rounded-2xl flex items-start gap-4 print:gap-2 shadow-sm">
                                    <AlertCircle className="text-blue-500 shrink-0 mt-0.5" size={20} />
                                    <div className="leading-snug print:leading-tight">
                                       <strong className="block text-base print:text-sm mb-1 text-blue-950">{pv.requiredProductTitle}</strong>
-                                      {renderBoldTemplate(pv.requiredProductTemplate, { weight: `${totalRequiredWeightKg} kg`, samples: totalSamplesCount })}
+                                      {renderBoldTemplate(pv.requiredProductTemplate, { weight: `${displayValue} ${displayUnit}`, samples: totalSamplesCount })}
                                    </div>
                                  </div>
                                );
@@ -1680,7 +1713,17 @@
                          logo: d.client.logo || null
                        });
                    } else if (d.project) {
-                       // Legacy: client info flattened into project
+                       // Legacy: client info flattened into project (very old
+                       // exports — no clientInfo, no client). Hoist the flat
+                       // contact fields into a single-entry contacts[] so the
+                       // multi-contact UI renders. Without this, the contact
+                       // is silently lost on import.
+                       const flatName = d.project.contactName || '';
+                       const flatRole = d.project.contactRole || d.project.role || '';
+                       const flatEmail = d.project.contactEmail || d.project.email || '';
+                       const flatPhoneDirect = d.project.phoneDirect || d.project.contactPhone || d.project.phone || '';
+                       const flatPhoneWork = d.project.phoneWork || '';
+                       const hasContact = flatName || flatRole || flatEmail || flatPhoneDirect || flatPhoneWork;
                        setClientInfo({
                          companyName: d.project.company || '',
                          street: d.project.street || '',
@@ -1690,13 +1733,20 @@
                          city: d.project.city || '',
                          country: d.project.country || '',
                          website: d.project.website || '',
-                         contactName: d.project.contactName || '', 
-                         role: d.project.contactRole || d.project.role || '', 
-                         email: d.project.contactEmail || d.project.email || '', 
+                         contactName: flatName,
+                         role: flatRole,
+                         email: flatEmail,
                          phone: d.project.contactPhone || d.project.phone || '',
-                         phoneDirect: d.project.phoneDirect || '',
-                         phoneWork: d.project.phoneWork || '',
-                         contacts: [],
+                         phoneDirect: flatPhoneDirect,
+                         phoneWork: flatPhoneWork,
+                         contacts: hasContact ? [{
+                           id: 1,
+                           name: flatName,
+                           role: flatRole,
+                           email: flatEmail,
+                           phoneDirect: flatPhoneDirect,
+                           phoneWork: flatPhoneWork
+                         }] : [],
                          logo: d.project.clientLogo || null  // legacy: proposal used project.clientLogo
                        });
                    }
@@ -2101,7 +2151,7 @@
           };
 
           if (isPreview) {
-            return <PrintPreview clientInfo={clientInfo} project={project} groups={groups} proposal={proposal} supplyChain={supplyChain} lang={lang} onBack={() => setIsPreview(false)} />;
+            return <PrintPreview clientInfo={clientInfo} project={project} groups={groups} proposal={proposal} supplyChain={supplyChain} lang={lang} unitSystem={unitSystem} onBack={() => setIsPreview(false)} />;
           }
 
           // --- EDITOR VIEW ---
