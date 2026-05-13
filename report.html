@@ -392,7 +392,7 @@
           );
         };
 
-        const SampleModal = ({ isOpen, onClose, data, onSave, startWeight, projectCriteria, isEvaluationDay, isDayEditable, projectTotalDuration, rt }) => {
+        const SampleModal = ({ isOpen, onClose, data, onSave, startWeight, projectCriteria, isEvaluationDay, isDayEditable, projectTotalDuration, isMAP = true, rt }) => {
           if (!isOpen) return null;
           const [samples, setSamples] = useState(data.samples || []);
           const [day, setDay] = useState(data.day === 0 ? 0 : (data.day || ''));
@@ -435,16 +435,16 @@
                 
                 <div className="p-8 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
                   <div>
-                    <h4 className="font-extrabold text-lg text-slate-800 border-b-2 border-slate-100 pb-3 mb-6">Atmosphere & Weight</h4>
+                    <h4 className="font-extrabold text-lg text-slate-800 border-b-2 border-slate-100 pb-3 mb-6">{isMAP ? 'Atmosphere & Weight' : 'Weight Only (Ambient)'}</h4>
                     <div className="flex flex-wrap justify-between items-center mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm gap-4 shadow-sm">
                       <div className="flex items-center gap-3">
                          <label className="font-extrabold text-slate-600 uppercase tracking-wider text-xs">Day:</label>
-                         <input 
-                           type="number" 
-                           value={day || ''} 
-                           disabled={!isDayEditable} 
-                           onChange={e => setDay(e.target.value)} 
-                           className={`w-20 p-2 border border-slate-300 rounded-lg text-center font-bold shadow-sm outline-none focus:ring-2 focus:ring-blue-500 ${!isDayEditable ? 'bg-slate-200 cursor-not-allowed text-slate-500' : 'bg-white'}`} 
+                         <input
+                           type="number"
+                           value={day || ''}
+                           disabled={!isDayEditable}
+                           onChange={e => setDay(e.target.value)}
+                           className={`w-20 p-2 border border-slate-300 rounded-lg text-center font-bold shadow-sm outline-none focus:ring-2 focus:ring-blue-500 ${!isDayEditable ? 'bg-slate-200 cursor-not-allowed text-slate-500' : 'bg-white'}`}
                          />
                       </div>
                       <div className="text-right flex gap-6">
@@ -457,8 +457,8 @@
                         <thead className="bg-slate-100 border-b border-slate-200">
                           <tr className="text-left text-slate-600 uppercase tracking-wider text-[10px] font-bold">
                             <th className="p-3 text-center">#</th>
-                            <th className="p-3" style={{color: BRAND.colors.blue}}>O₂ (%)</th>
-                            <th className="p-3" style={{color: BRAND.colors.green}}>CO₂ (%)</th>
+                            {isMAP && <th className="p-3" style={{color: BRAND.colors.blue}}>O₂ (%)</th>}
+                            {isMAP && <th className="p-3" style={{color: BRAND.colors.green}}>CO₂ (%)</th>}
                             <th className="p-3">Weight {parseFloat(day)===0 && '(Start)'}</th>
                             <th className="p-3"></th>
                           </tr>
@@ -467,12 +467,16 @@
                           {samples.map((s, i) => (
                             <tr key={i} className="hover:bg-slate-50 transition-colors bg-white">
                               <td className="p-3 font-extrabold text-slate-400 text-center">{i + 1}</td>
-                              <td className="p-3">
-                                 {isOpened ? <div className="text-center font-bold text-slate-300 w-full">-</div> : <input type="number" className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-blue-900" value={s.o2 === 0 ? 0 : (s.o2 || '')} onChange={e => updateSample(i, 'o2', e.target.value)} />}
-                              </td>
-                              <td className="p-3">
-                                 {isOpened ? <div className="text-center font-bold text-slate-300 w-full">-</div> : <input type="number" className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500 text-center font-bold text-green-900" value={s.co2 === 0 ? 0 : (s.co2 || '')} onChange={e => updateSample(i, 'co2', e.target.value)} />}
-                              </td>
+                              {isMAP && (
+                                <td className="p-3">
+                                   {isOpened ? <div className="text-center font-bold text-slate-300 w-full">-</div> : <input type="number" className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-blue-900" value={s.o2 === 0 ? 0 : (s.o2 || '')} onChange={e => updateSample(i, 'o2', e.target.value)} />}
+                                </td>
+                              )}
+                              {isMAP && (
+                                <td className="p-3">
+                                   {isOpened ? <div className="text-center font-bold text-slate-300 w-full">-</div> : <input type="number" className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500 text-center font-bold text-green-900" value={s.co2 === 0 ? 0 : (s.co2 || '')} onChange={e => updateSample(i, 'co2', e.target.value)} />}
+                                </td>
+                              )}
                               <td className="p-3"><input type="number" className="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-slate-500 text-center font-bold" value={s.weight === 0 ? 0 : (s.weight || '')} onChange={e => updateSample(i, 'weight', e.target.value)} placeholder="g" /></td>
                               <td className="p-3 text-center"><button onClick={() => removeSample(i)} className="text-red-400 hover:text-red-600 bg-red-50 p-2 rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={16}/></button></td>
                             </tr>
@@ -686,12 +690,12 @@
                       <div className="w-full flex items-center justify-between gap-12 px-8">
                           <div className="flex-1 min-w-0 flex justify-start">
                             {project.logo && (
-                               <img src={project.logo} alt="PerfoTec Logo" className="h-20 max-h-24 max-w-[40%] object-contain" crossOrigin="anonymous" />
+                               <img src={project.logo} alt="PerfoTec Logo" className="h-32 print:h-28 max-h-40 max-w-[90%] object-contain" crossOrigin="anonymous" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0 flex justify-end">
                             {clientInfo.logo && (
-                               <img src={clientInfo.logo} alt="Client Logo" className="h-20 max-h-24 max-w-[40%] object-contain" crossOrigin="anonymous" />
+                               <img src={clientInfo.logo} alt="Client Logo" className="h-32 print:h-28 max-h-40 max-w-[90%] object-contain" crossOrigin="anonymous" />
                             )}
                           </div>
                       </div>
@@ -1149,13 +1153,47 @@
               street: 'Street', houseNo: 'House No.', addressExtra: 'Additional Info (floor, building, etc.)', zipCode: 'Zip Code', city: 'City', country: 'Country',
               contactPerson: 'Contact Person', role: 'Role', email: 'Email', phone: 'Phone',
               phoneDirect: 'Phone (Direct)', phoneWork: 'Phone (Work)', addContactBtn: 'Add Contact',
-              secProduct: '3. Product Details', secA: 'A. Product Information', secB: 'B. Weight & Respiration Data',
+              secProduct: '3. Product Details',
+              secA: 'A. Product & Packaging', secB: 'B. Challenge & Objectives', secC: 'C. Current Supply Chain',
               metric: 'Metric', imperial: 'Imperial',
               secGoals: '3. Goals & Challenges', currentChallenge: 'Current Challenge', trialTarget: 'Trial Target / Goal',
               secSupplyChain: 'Product Supply Chain', transportMode: 'Transport Mode',
               supplyChainFlow: 'Supply Chain Flow',
               step: 'Step', phase: 'Phase (Activity)', temp: 'Temp (°C)', days: 'Time (Days)', action: 'Action',
               actNone: '- None -', actPack: 'Pack', actUnpack: 'Unpack', addStep: 'Add Extra Step', removeStep: 'Remove Step',
+              // Packaging row + dimensions (mirrors Proposal sub-A)
+              packType: 'Packaging Type', currentMaterial: 'Current Material',
+              dimens: 'Packaging Dimensions (Inner)', len: 'Length', wid: 'Width', widSeal: 'Seal Width', hei: 'Height',
+              // Quality Criteria (Setup-tab toggle grid, mirrors Proposal/Intake)
+              qualityCrit: 'Quality Criteria', qualityCritDesc: 'Click a criterion to toggle it.',
+              // DEEL 6 — Product Characteristics & Defect Prevention
+              secDefects: '5. Product Characteristics & Defect Prevention',
+              defectsMatrixSubtitle: 'Defects & Prevention Matrix',
+              defectsMatrixDesc: 'List the typical defects for this product. For each defect, describe the physiological cause and how MHP (moisture) and MAP (gas) treatments influence it.',
+              defectColLabel: 'Defect', causeColLabel: 'Physiological Cause',
+              effectMHPColLabel: 'Effect MHP (Moisture)', effectMAPColLabel: 'Effect MAP (Gas)',
+              defectPlaceholder: 'e.g. Browning', causePlaceholder: 'e.g. Oxidation',
+              effectMHPPlaceholder: 'Effect of moisture treatment...', effectMAPPlaceholder: 'Effect of gas treatment...',
+              addDefectRow: 'Add Defect', removeDefectRow: 'Remove defect',
+              noDefectsAdded: 'No defects added yet — click below to add the first one.',
+              productProperties: 'Product Properties',
+              productPropertiesDesc: 'Optimal operating window for this product. The ACP is the lower oxygen limit, below which the cell switches to anaerobic respiration.',
+              o2TargetLabel: 'O₂ Target', o2AcpLabel: 'O₂ ACP',
+              co2TargetLabel: 'CO₂ Target', co2CriticalLabel: 'CO₂ Critical %',
+              tempCriticalLabel: 'Temp Critical (min)', ethyleneProfileLabel: 'Ethylene Profile',
+              o2TargetPlaceholder: 'e.g. 1.0% - 5.0%', co2TargetPlaceholder: 'e.g. 5.0% - 15.0%',
+              tempCriticalPlaceholder: 'e.g. 0°C - 4°C', o2AcpPlaceholder: 'e.g. 0.2% - 0.4%',
+              co2CriticalPlaceholder: 'e.g. 15%', ethyleneProfilePlaceholder: 'e.g. Climacteric — high ethylene production',
+              productSheetDropTitle: 'Import Product Sheet',
+              productSheetDropDesc: 'Drag a PerfoTec product-sheet HTML file here, or click to upload. The defects matrix and gas/temperature targets will be filled automatically.',
+              productSheetBrowse: 'Choose product-sheet file',
+              productSheetDropActive: 'Drop the file to import…',
+              productSheetParseFail: 'Could not parse this product sheet. Check that it contains a defects matrix and an "Optimal Conditions" section.',
+              // Groups tab — atmosphere strategy + evaluation days + measurement table modal headers
+              atmosphereStrategy: 'Atmosphere Strategy',
+              optMAP: 'MAP (Atmosphere buildup)', optMHP: 'MHP (No atmosphere buildup)', optOpen: 'Open (No packaging)',
+              globalEvalDays: 'Global Evaluation Days', evalDaysDesc: 'Specify the days on which packs are opened and evaluated.',
+              addEvalDay: 'Add Evaluation Day', day: 'Day',
               // Groups tab
               globalCriteria: 'Global Assessment Criteria', noCriteria: 'No criteria selected.',
               selectCriterion: 'Select standard criterion...', addCriterion: 'Add Criterion',
@@ -1188,6 +1226,10 @@
               warning: 'Warning',
               warningText: 'You are about to overwrite the current Prediction Graph with a new image. Do you want to continue?',
               cancel: 'Cancel', overwrite: 'Overwrite',
+              selectProductTitle: 'Select Product',
+              selectProductDesc: 'This intake file contains multiple products. Choose which product you want to import into this report.',
+              selectProductHint: 'Click a product to load it.',
+              productLabel: 'Product', noProductName: 'Unnamed product',
               // SampleModal
               thCriterion: 'Criterion', thScore: 'Score', thNotes: 'Notes',
               noCriteriaModal: 'No criteria selected in Global Settings.',
@@ -1225,13 +1267,43 @@
               street: 'Straat', houseNo: 'Huisnr.', addressExtra: 'Extra (verdieping, gebouw, etc.)', zipCode: 'Postcode', city: 'Plaats', country: 'Land',
               contactPerson: 'Contactpersoon', role: 'Functie', email: 'E-mail', phone: 'Telefoon',
               phoneDirect: 'Telefoon (Direct)', phoneWork: 'Telefoon (Werk)', addContactBtn: 'Contact Toevoegen',
-              secProduct: '3. Productgegevens', secA: 'A. Productinformatie', secB: 'B. Gewicht & Respiratie Data',
+              secProduct: '3. Productgegevens',
+              secA: 'A. Product & Verpakking', secB: 'B. Uitdaging & Doelstelling', secC: 'C. Huidige Supply Chain',
               metric: 'Metrisch', imperial: 'Imperiaal',
               secGoals: '3. Doelen & Uitdagingen', currentChallenge: 'Huidige Uitdaging', trialTarget: 'Testdoel',
               secSupplyChain: 'Product Supply Chain', transportMode: 'Transportmodus',
               supplyChainFlow: 'Supply Chain Overzicht',
               step: 'Stap', phase: 'Fase (Activiteit)', temp: 'Temp (°C)', days: 'Tijd (Dagen)', action: 'Actie',
               actNone: '- Geen -', actPack: 'Inpakken', actUnpack: 'Uitpakken', addStep: 'Extra Stap Toevoegen', removeStep: 'Verwijder Stap',
+              packType: 'Type Verpakking', currentMaterial: 'Huidig Materiaal',
+              dimens: 'Afmetingen verpakking (Binnenmaat)', len: 'Lengte', wid: 'Breedte', widSeal: 'Seal Breedte', hei: 'Hoogte',
+              qualityCrit: 'Kwaliteitscriteria', qualityCritDesc: 'Klik op een criterium om deze in of uit te schakelen.',
+              secDefects: '5. Producteigenschappen & Defectpreventie',
+              defectsMatrixSubtitle: 'Defecten & Preventiematrix',
+              defectsMatrixDesc: 'Voer de typische defecten voor dit product op. Beschrijf per defect de fysiologische oorzaak en hoe MHP (vocht) en MAP (gas) behandeling deze beïnvloeden.',
+              defectColLabel: 'Defect', causeColLabel: 'Fysiologische Oorzaak',
+              effectMHPColLabel: 'Effect MHP (Vocht)', effectMAPColLabel: 'Effect MAP (Gas)',
+              defectPlaceholder: 'bv. Verbruining', causePlaceholder: 'bv. Oxidatie',
+              effectMHPPlaceholder: 'Effect van vochtbehandeling...', effectMAPPlaceholder: 'Effect van gasbehandeling...',
+              addDefectRow: 'Defect Toevoegen', removeDefectRow: 'Defect verwijderen',
+              noDefectsAdded: 'Nog geen defecten toegevoegd — klik hieronder om de eerste toe te voegen.',
+              productProperties: 'Producteigenschappen',
+              productPropertiesDesc: 'Optimaal werkvenster voor dit product. Het ACP is de onderste zuurstofgrens, daaronder schakelt de cel om naar anaerobe ademhaling.',
+              o2TargetLabel: 'O₂ Target', o2AcpLabel: 'O₂ ACP',
+              co2TargetLabel: 'CO₂ Target', co2CriticalLabel: 'CO₂ Kritisch %',
+              tempCriticalLabel: 'Temp Kritisch (min)', ethyleneProfileLabel: 'Ethyleen Profiel',
+              o2TargetPlaceholder: 'bv. 1.0% - 5.0%', co2TargetPlaceholder: 'bv. 5.0% - 15.0%',
+              tempCriticalPlaceholder: 'bv. 0°C - 4°C', o2AcpPlaceholder: 'bv. 0.2% - 0.4%',
+              co2CriticalPlaceholder: 'bv. 15%', ethyleneProfilePlaceholder: 'bv. Climacterisch — hoge ethyleenproductie',
+              productSheetDropTitle: 'Product Sheet Importeren',
+              productSheetDropDesc: 'Sleep een PerfoTec product-sheet HTML hier, of klik om te uploaden. De defectenmatrix en gas/temperatuur targets worden automatisch ingevuld.',
+              productSheetBrowse: 'Kies product-sheet bestand',
+              productSheetDropActive: 'Laat het bestand los om te importeren…',
+              productSheetParseFail: 'Kon deze product sheet niet inlezen. Controleer of er een defectenmatrix en een "Optimale Condities" sectie in staat.',
+              atmosphereStrategy: 'Atmosfeer Strategie',
+              optMAP: 'MAP (gericht op atmosfeer)', optMHP: 'MHP (geen atmosfeer opbouw)', optOpen: 'Open (geen verpakking)',
+              globalEvalDays: 'Globale Evaluatiedagen', evalDaysDesc: 'Geef de dagen op waarop verpakkingen worden geopend en beoordeeld.',
+              addEvalDay: 'Evaluatiedag Toevoegen', day: 'Dag',
               globalCriteria: 'Globale Beoordelingscriteria', noCriteria: 'Geen criteria geselecteerd.',
               selectCriterion: 'Selecteer standaard criterium...', addCriterion: 'Criterium Toevoegen',
               perfoTecTech: 'PerfoTec Technologie',
@@ -1262,6 +1334,10 @@
               warning: 'Waarschuwing',
               warningText: 'U staat op het punt de huidige Voorspellingsgrafiek te overschrijven met een nieuwe afbeelding. Wilt u doorgaan?',
               cancel: 'Annuleren', overwrite: 'Overschrijven',
+              selectProductTitle: 'Selecteer Product',
+              selectProductDesc: 'Dit intake-bestand bevat meerdere producten. Kies welk product u in dit rapport wilt importeren.',
+              selectProductHint: 'Klik op een product om het te laden.',
+              productLabel: 'Product', noProductName: 'Naamloos product',
               // SampleModal
               thCriterion: 'Criterium', thScore: 'Score', thNotes: 'Notities',
               noCriteriaModal: 'Geen criteria geselecteerd in Globale Instellingen.',
@@ -1299,13 +1375,43 @@
               street: 'Calle', houseNo: 'Número', addressExtra: 'Información adicional (piso, edificio, etc.)', zipCode: 'Código Postal', city: 'Ciudad', country: 'País',
               contactPerson: 'Persona de Contacto', role: 'Cargo', email: 'Correo', phone: 'Teléfono',
               phoneDirect: 'Teléfono (Directo)', phoneWork: 'Teléfono (Trabajo)', addContactBtn: 'Añadir Contacto',
-              secProduct: '3. Detalles del Producto', secA: 'A. Información del Producto', secB: 'B. Datos de Peso y Respiración',
+              secProduct: '3. Detalles del Producto',
+              secA: 'A. Producto y Empaque', secB: 'B. Desafío y Objetivos', secC: 'C. Cadena de Suministro Actual',
               metric: 'Métrico', imperial: 'Imperial',
               secGoals: '3. Objetivos y Desafíos', currentChallenge: 'Desafío Actual', trialTarget: 'Objetivo de Prueba',
               secSupplyChain: 'Cadena de Suministro', transportMode: 'Modo de Transporte',
               supplyChainFlow: 'Flujo de Cadena de Suministro',
               step: 'Paso', phase: 'Fase (Actividad)', temp: 'Temp (°C)', days: 'Tiempo (Días)', action: 'Acción',
               actNone: '- Ninguna -', actPack: 'Empacar', actUnpack: 'Desempacar', addStep: 'Añadir Paso', removeStep: 'Eliminar Paso',
+              packType: 'Tipo de Empaque', currentMaterial: 'Material Actual',
+              dimens: 'Dimensiones del empaque (Internas)', len: 'Longitud', wid: 'Ancho', widSeal: 'Ancho del Sello', hei: 'Altura',
+              qualityCrit: 'Criterios de Calidad', qualityCritDesc: 'Haga clic en un criterio para activarlo o desactivarlo.',
+              secDefects: '5. Características del Producto y Prevención de Defectos',
+              defectsMatrixSubtitle: 'Matriz de Defectos y Prevención',
+              defectsMatrixDesc: 'Liste los defectos típicos para este producto. Para cada defecto, describa la causa fisiológica y cómo los tratamientos MHP (humedad) y MAP (gas) influyen en ellos.',
+              defectColLabel: 'Defecto', causeColLabel: 'Causa Fisiológica',
+              effectMHPColLabel: 'Efecto MHP (Humedad)', effectMAPColLabel: 'Efecto MAP (Gas)',
+              defectPlaceholder: 'ej. Pardeamiento', causePlaceholder: 'ej. Oxidación',
+              effectMHPPlaceholder: 'Efecto del tratamiento de humedad...', effectMAPPlaceholder: 'Efecto del tratamiento de gas...',
+              addDefectRow: 'Añadir Defecto', removeDefectRow: 'Eliminar defecto',
+              noDefectsAdded: 'Aún no se han añadido defectos — haga clic abajo para añadir el primero.',
+              productProperties: 'Propiedades del Producto',
+              productPropertiesDesc: 'Ventana operativa óptima para este producto. El ACP es el límite inferior de oxígeno, por debajo del cual la célula pasa a respiración anaeróbica.',
+              o2TargetLabel: 'O₂ Objetivo', o2AcpLabel: 'O₂ ACP',
+              co2TargetLabel: 'CO₂ Objetivo', co2CriticalLabel: 'CO₂ Crítico %',
+              tempCriticalLabel: 'Temp Crítica (mín)', ethyleneProfileLabel: 'Perfil de Etileno',
+              o2TargetPlaceholder: 'ej. 1.0% - 5.0%', co2TargetPlaceholder: 'ej. 5.0% - 15.0%',
+              tempCriticalPlaceholder: 'ej. 0°C - 4°C', o2AcpPlaceholder: 'ej. 0.2% - 0.4%',
+              co2CriticalPlaceholder: 'ej. 15%', ethyleneProfilePlaceholder: 'ej. Climatérico — alta producción de etileno',
+              productSheetDropTitle: 'Importar Ficha de Producto',
+              productSheetDropDesc: 'Arrastre un archivo HTML de ficha de producto PerfoTec aquí, o haga clic para subirlo. La matriz de defectos y los objetivos de gas/temperatura se rellenarán automáticamente.',
+              productSheetBrowse: 'Elegir archivo de ficha',
+              productSheetDropActive: 'Suelte el archivo para importar…',
+              productSheetParseFail: 'No se pudo procesar esta ficha. Verifique que contenga una matriz de defectos y una sección "Condiciones Óptimas".',
+              atmosphereStrategy: 'Estrategia de Atmósfera',
+              optMAP: 'MAP (Modificación de atmósfera)', optMHP: 'MHP (Sin modificación de atmósfera)', optOpen: 'Abierto (Sin empaque)',
+              globalEvalDays: 'Días de Evaluación Global', evalDaysDesc: 'Especifique los días en que se abren y evalúan los paquetes.',
+              addEvalDay: 'Añadir Día de Evaluación', day: 'Día',
               globalCriteria: 'Criterios de Evaluación Global', noCriteria: 'Ningún criterio seleccionado.',
               selectCriterion: 'Seleccionar criterio estándar...', addCriterion: 'Añadir Criterio',
               perfoTecTech: 'Tecnología PerfoTec',
@@ -1336,6 +1442,10 @@
               warning: 'Advertencia',
               warningText: 'Está a punto de sobrescribir el Gráfico de Predicción actual con una nueva imagen. ¿Desea continuar?',
               cancel: 'Cancelar', overwrite: 'Sobrescribir',
+              selectProductTitle: 'Seleccionar Producto',
+              selectProductDesc: 'Este archivo de admisión contiene varios productos. Elija qué producto desea importar en este informe.',
+              selectProductHint: 'Haga clic en un producto para cargarlo.',
+              productLabel: 'Producto', noProductName: 'Producto sin nombre',
               // SampleModal
               thCriterion: 'Criterio', thScore: 'Puntuación', thNotes: 'Notas',
               noCriteriaModal: 'Ningún criterio seleccionado en Configuración Global.',
@@ -1368,6 +1478,10 @@
           const [detailsModalOpen, setDetailsModalOpen] = useState(false);
           const [editingMeasurement, setEditingMeasurement] = useState(null);
           const [pendingImageReplace, setPendingImageReplace] = useState(null);
+          // When an intake JSON contains >1 products, hold the parsed payload
+          // here while the user picks which product to load. Shape:
+          //   { raw: <migrated intake payload>, products: [<product>, ...] }
+          const [pendingProductSelection, setPendingProductSelection] = useState(null);
 
           // --- DATA STATE ---
           const [clientInfo, setClientInfo] = useState({
@@ -1378,14 +1492,22 @@
           });
 
           const [project, setProject] = useState({
-            reportTitle: 'Quality Report MAP Test', 
+            reportTitle: 'Quality Report MAP Test',
             productName: '', processingType: 'Whole', type: '', origin: '', company: '', contactName: '', contactEmail: '', contactRole: '', contactPhone: '', street: '', houseNumber: '', addressExtra: '', zipCode: '', city: '', country: '', employee: '', trialTarget: '', currentChallenge: '',
             rrO2: '', rrCO2: '', rrTemp: '', startWeight: '',
+            // Packaging — mirrors proposal so the Setup tab has full parity.
+            packagingType: 'Retail', material: '', length: '', width: '', height: '',
+            // Product Characteristics (Section 3 in print preview / DEEL 6 editor)
+            // — additive, do not affect existing flows when empty.
+            acpO2: '', co2Max: '', co2Shock: '', co2ShockHours: '', tempMin: '',
+            o2Target: '', co2Target: '', ethyleneProfile: '',
             totalDuration: '', retailOpenDays: '', transportMode: '',
-            criteria: [], technologies: [], 
+            criteria: [], technologies: [],
             date: new Date().toISOString().split('T')[0], packingDate: new Date().toISOString().split('T')[0],
             logo: BRAND.logos.default, clientLogo: null, startImage: null, coverImage: null,
-            maturityStage: '', postHarvestTreatment: ''
+            maturityStage: '', postHarvestTreatment: '',
+            // Defects & Prevention Matrix rows for Section 3 of the report.
+            defectsMatrix: []
           });
 
           const [supplyChain, setSupplyChain] = useState(JSON.parse(JSON.stringify(DEFAULT_SUPPLY_CHAIN)).map(s => ({...s, stage: (globalConfig.translateLabel ? globalConfig.translateLabel(s.stage, lang) : s.stage)})));
@@ -1438,11 +1560,32 @@
 
           // Multi-contact helpers — mirror intake/proposal so the same
           // clientInfo.contacts[] array round-trips across all three tools.
+          //
+          // When editing the primary contact (contacts[0]), keep the legacy
+          // flat shadow fields (`contactName`, `role`, `email`, `phone`,
+          // `phoneDirect`, `phoneWork`) in sync. The print/PDF preview rendering
+          // and legacy `project.contact*` export fields still read those flats,
+          // so without this sync they would show stale data after an edit.
+          const syncFlatFromPrimaryContact = (prev, primary) => {
+             if (!primary) return prev;
+             return {
+                ...prev,
+                contactName: primary.name || '',
+                role: primary.role || '',
+                email: primary.email || '',
+                phone: primary.phoneDirect || primary.phoneWork || '',
+                phoneDirect: primary.phoneDirect || '',
+                phoneWork: primary.phoneWork || ''
+             };
+          };
+
           const handleContactChange = (id, field, value) => {
-             setClientInfo(prev => ({
-                 ...prev,
-                 contacts: (prev.contacts || []).map(c => c.id === id ? { ...c, [field]: value } : c)
-             }));
+             setClientInfo(prev => {
+                const newContacts = (prev.contacts || []).map(c => c.id === id ? { ...c, [field]: value } : c);
+                const primaryEdited = prev.contacts && prev.contacts[0] && prev.contacts[0].id === id;
+                const next = { ...prev, contacts: newContacts };
+                return primaryEdited ? syncFlatFromPrimaryContact(next, newContacts[0]) : next;
+             });
           };
 
           const addContact = () => {
@@ -1453,10 +1596,13 @@
           };
 
           const removeContact = (id) => {
-             setClientInfo(prev => ({
-                 ...prev,
-                 contacts: (prev.contacts || []).filter(c => c.id !== id)
-             }));
+             setClientInfo(prev => {
+                const newContacts = (prev.contacts || []).filter(c => c.id !== id);
+                const primaryRemoved = prev.contacts && prev.contacts[0] && prev.contacts[0].id === id;
+                const next = { ...prev, contacts: newContacts };
+                // Promote the new primary into the flat shadow fields.
+                return primaryRemoved ? syncFlatFromPrimaryContact(next, newContacts[0]) : next;
+             });
           };
 
           // Metric/Imperial toggle — converts startWeight (project & per-group)
@@ -1566,6 +1712,12 @@
               ? { ...clientInfo, contacts: globalConfig.buildContactsArray(clientInfo) }
               : clientInfo;
 
+            // Legacy `project.contactName/contactRole/...` fields are kept for
+            // backward compatibility with older importers. Source them from the
+            // canonical contacts[0] (post-build) so they always reflect the
+            // multi-contact UI's current state — never stale shadow flats.
+            const primaryContact = (normalizedClientInfo.contacts && normalizedClientInfo.contacts[0]) || {};
+
             const data = {
               isPerfoTecReport: true,
               schemaVersion: globalConfig.SCHEMA_VERSION || '2.1',
@@ -1573,7 +1725,7 @@
               exportDate: new Date().toISOString(),
               language: lang,
               unitSystem: unitSystem,
-              project: { ...project, company: clientInfo.companyName, street: clientInfo.street, houseNumber: clientInfo.houseNumber, addressExtra: clientInfo.addressExtra, zipCode: clientInfo.zipCode, city: clientInfo.city, country: clientInfo.country, contactName: clientInfo.contactName, contactRole: clientInfo.role, contactEmail: clientInfo.email, contactPhone: clientInfo.phone },
+              project: { ...project, company: clientInfo.companyName, street: clientInfo.street, houseNumber: clientInfo.houseNumber, addressExtra: clientInfo.addressExtra, zipCode: clientInfo.zipCode, city: clientInfo.city, country: clientInfo.country, contactName: primaryContact.name || '', contactRole: primaryContact.role || '', contactEmail: primaryContact.email || '', contactPhone: primaryContact.phoneDirect || primaryContact.phoneWork || '' },
               clientInfo: normalizedClientInfo, supplyChain, groups, analysis
             };
             const jsonString = JSON.stringify(data, null, 2);
@@ -1587,28 +1739,100 @@
             }
           };
 
+          // Shared helpers used by both the direct import path and the
+          // multi-product modal flow (declared at component scope so they can
+          // be invoked from confirmProductSelection too).
+          const reportExtractPrimaryContact = globalConfig.extractPrimaryContact
+            ? globalConfig.extractPrimaryContact.bind(globalConfig)
+            : (c) => ({ contactName: '', role: '', email: '', phone: '', phoneDirect: '', phoneWork: '', contacts: [] });
+
+          // Ensure clientInfo.contacts[] always has at least one seed card so
+          // the multi-contact UI renders consistently after legacy imports.
+          const reportSeedContacts = (data) => {
+            if (!data || !Array.isArray(data.contacts) || data.contacts.length === 0) {
+              return {
+                ...data,
+                contacts: [{ id: Date.now(), name: '', role: '', email: '', phoneDirect: '', phoneWork: '' }]
+              };
+            }
+            return data;
+          };
+
+          // Apply a single intake product (from a migrated intake payload) to
+          // report state. Extracted so the import flow can call it both
+          // directly (1 product) and after the user picks one in the modal
+          // (>1 products).
+          const loadIntakeProduct = (d, prod) => {
+            const client = d.client || {};
+            const p = prod || {};
+            const contactData = reportSeedContacts(reportExtractPrimaryContact(client));
+
+            setClientInfo({
+              companyName: client.companyName || '',
+              street: client.street || '',
+              houseNumber: client.houseNumber || '',
+              addressExtra: client.addressExtra || '',
+              zipCode: client.zipCode || '',
+              city: client.city || '',
+              country: client.country || '',
+              website: client.website || '',
+              ...contactData,
+              logo: client.logo || null
+            });
+            setProject(prev => ({ ...prev,
+              productName: p.name || '',
+              processingType: p.processingType || 'Whole',
+              type: p.type || '',
+              origin: p.origin || '',
+              maturityStage: p.maturityStage || '',
+              postHarvestTreatment: p.postHarvestTreatment || '',
+              currentChallenge: p.currentChallenge || '',
+              trialTarget: p.trialTarget || p.targetGoal || '',
+              transportMode: p.transportMode || (p.transportModes?.[0] || ''),
+              criteria: p.qualityCriteria || [],
+              startImage: p.photo || null,
+              startWeight: p.weight || prev.startWeight,
+              technologies: p.technologies || prev.technologies || [],
+              packagingType: p.packagingType || prev.packagingType || 'Retail',
+              material: p.material || prev.material || '',
+              length: p.length || prev.length || '',
+              width: p.width || prev.width || '',
+              height: p.height || prev.height || ''
+            }));
+            if (p.supplyChain) setSupplyChain(p.supplyChain);
+            setGroups(prev => {
+              const ug = [...prev];
+              if (ug[0]) {
+                ug[0].specs = {
+                  ...ug[0].specs,
+                  packaging: p.packagingType || 'Retail',
+                  material: p.material || '',
+                  length: p.length || '',
+                  width: p.width || '',
+                  height: p.height || '',
+                  startWeight: p.weight || ''
+                };
+              }
+              return ug;
+            });
+          };
+
+          // Confirm handler for the multi-product picker modal.
+          const confirmProductSelection = (productIdx) => {
+            if (!pendingProductSelection) return;
+            const { raw, products } = pendingProductSelection;
+            const chosen = products[productIdx] || products[0] || {};
+            loadIntakeProduct(raw, chosen);
+            setPendingProductSelection(null);
+          };
+
           const importData = (e) => {
             const file = e.target.files[0]; if(!file) return;
 
-            // Canonical contact projection comes from config; fallback to a
-            // local no-op in the unlikely event config is missing.
-            const extractPrimaryContact = globalConfig.extractPrimaryContact
-              ? globalConfig.extractPrimaryContact.bind(globalConfig)
-              : (c) => ({ contactName: '', role: '', email: '', phone: '', phoneDirect: '', phoneWork: '', contacts: [] });
-
-            // Ensure clientInfo.contacts[] always has at least one seed card so
-            // the multi-contact UI renders consistently after legacy imports
-            // (legacy payloads without a `contacts` array would otherwise
-            // produce an empty contact section on the form).
-            const seedContacts = (data) => {
-              if (!data || !Array.isArray(data.contacts) || data.contacts.length === 0) {
-                return {
-                  ...data,
-                  contacts: [{ id: Date.now(), name: '', role: '', email: '', phoneDirect: '', phoneWork: '' }]
-                };
-              }
-              return data;
-            };
+            // Local aliases for the helpers declared at component scope above —
+            // keeps the existing processData body unchanged.
+            const extractPrimaryContact = reportExtractPrimaryContact;
+            const seedContacts = reportSeedContacts;
 
             const processData = (raw) => {
                 // Normalise legacy shapes (flat contacts, targetGoal alias, missing
@@ -1624,53 +1848,15 @@
                 
                 if(d.isPerfoTecIntake) {
                    // === INTAKE IMPORT ===
-                   const client = d.client || {};
-                   const prod = d.products?.[0] || {};
-                   const contactData = seedContacts(extractPrimaryContact(client));
-
-                   setClientInfo({
-                     companyName: client.companyName || '',
-                     street: client.street || '',
-                     houseNumber: client.houseNumber || '',
-                     addressExtra: client.addressExtra || '',
-                     zipCode: client.zipCode || '',
-                     city: client.city || '',
-                     country: client.country || '',
-                     website: client.website || '',
-                     ...contactData,
-                     logo: client.logo || null
-                   });
-                   setProject(p => ({ ...p, 
-                     productName: prod.name || '', 
-                     processingType: prod.processingType || 'Whole', 
-                     type: prod.type || '', 
-                     origin: prod.origin || '', 
-                     maturityStage: prod.maturityStage || '', 
-                     postHarvestTreatment: prod.postHarvestTreatment || '', 
-                     currentChallenge: prod.currentChallenge || '', 
-                     trialTarget: prod.trialTarget || prod.targetGoal || '',
-                     transportMode: prod.transportMode || (prod.transportModes?.[0] || ''), 
-                     criteria: prod.qualityCriteria || [], 
-                     startImage: prod.photo || null,
-                     startWeight: prod.weight || p.startWeight,
-                     technologies: prod.technologies || p.technologies || []
-                   }));
-                   if (prod.supplyChain) setSupplyChain(prod.supplyChain);
-                   setGroups(p => { 
-                     const ug = [...p]; 
-                     if(ug[0]) { 
-                       ug[0].specs = { 
-                         ...ug[0].specs, 
-                         packaging: prod.packagingType || 'Retail', 
-                         material: prod.material || '', 
-                         length: prod.length || '', 
-                         width: prod.width || '', 
-                         height: prod.height || '', 
-                         startWeight: prod.weight || '' 
-                       }; 
-                     } 
-                     return ug; 
-                   });
+                   // Report works with one product per session. If the intake
+                   // JSON carries multiple products, defer the import and let
+                   // the user pick which one to load via the modal below.
+                   const products = Array.isArray(d.products) ? d.products : [];
+                   if (products.length > 1) {
+                     setPendingProductSelection({ raw: d, products });
+                   } else {
+                     loadIntakeProduct(d, products[0] || {});
+                   }
                 } else {
                    // === PROPOSAL/REPORT IMPORT ===
                    if(d.clientInfo) {
@@ -1777,6 +1963,178 @@
           const handleTransportModeToggle = (mode) => { setProject(p => ({ ...p, transportMode: p.transportMode === mode ? '' : mode })); };
           const toggleTechnology = (tech) => { setProject(p => ({ ...p, technologies: p.technologies?.includes(tech) ? p.technologies.filter(t => t !== tech) : [...(p.technologies || []), tech] })); };
 
+          // === DEFECTS & PREVENTION MATRIX ===
+          // Mirrors proposal.html: stable per-row ids so React keys stay valid
+          // and the matrix round-trips cleanly through JSON.
+          const addDefectRow = () => setProject(p => ({
+            ...p,
+            defectsMatrix: [...(p.defectsMatrix || []), { id: Date.now(), defect: '', cause: '', effectMHP: '', effectMAP: '' }]
+          }));
+          const removeDefectRow = (rowId) => setProject(p => ({
+            ...p,
+            defectsMatrix: (p.defectsMatrix || []).filter(r => r.id !== rowId)
+          }));
+          const updateDefectRow = (rowId, field, value) => setProject(p => ({
+            ...p,
+            defectsMatrix: (p.defectsMatrix || []).map(r => r.id === rowId ? { ...r, [field]: value } : r)
+          }));
+
+          // === PRODUCT-SHEET IMPORTER ===
+          // Drop-zone parser: takes a PerfoTec product-sheet HTML and fills
+          // gas/temp targets + the defects matrix. Mirrors proposal.html so
+          // both tools speak the same product-sheet format.
+          const extractProductSheetTranslations = (htmlText) => {
+            const startMarker = 'const translations';
+            const startIdx = htmlText.indexOf(startMarker);
+            if (startIdx === -1) return null;
+            const eqIdx = htmlText.indexOf('=', startIdx);
+            if (eqIdx === -1) return null;
+            const braceStart = htmlText.indexOf('{', eqIdx);
+            if (braceStart === -1) return null;
+            let depth = 0, i = braceStart, inStr = null, escaped = false;
+            while (i < htmlText.length) {
+              const c = htmlText[i];
+              if (escaped) { escaped = false; i++; continue; }
+              if (inStr) {
+                if (c === '\\') { escaped = true; i++; continue; }
+                if (c === inStr) inStr = null;
+                i++; continue;
+              }
+              if (c === '"' || c === "'" || c === '`') { inStr = c; i++; continue; }
+              if (c === '{') depth++;
+              else if (c === '}') { depth--; if (depth === 0) { i++; break; } }
+              i++;
+            }
+            const objLit = htmlText.substring(braceStart, i);
+            try { return new Function('return ' + objLit)(); } catch (e) { return null; }
+          };
+          const stripHtml = (html) => {
+            if (!html) return '';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = String(html);
+            return tmp.textContent.replace(/\s+/g, ' ').trim();
+          };
+          const parseProductSheet = (htmlText, targetLang) => {
+            const result = { defects: [], o2Target: '', co2Target: '', tempCritical: '', o2Acp: '' };
+            if (!htmlText || typeof htmlText !== 'string') return result;
+            try {
+              const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+              const allTrans = extractProductSheetTranslations(htmlText);
+              const wanted = targetLang || 'nl';
+              const langDict = (allTrans && allTrans[wanted] && Object.keys(allTrans[wanted]).length > 0)
+                ? allTrans[wanted] : null;
+              const cellText = (td) => {
+                const key = td.getAttribute && td.getAttribute('data-translate');
+                if (key && langDict && langDict[key]) return stripHtml(langDict[key]);
+                return td.textContent.replace(/\s+/g, ' ').trim();
+              };
+              const rows = doc.querySelectorAll('#common-defects table.data-table tbody tr, table.data-table tbody tr');
+              const seen = new Set();
+              rows.forEach((tr, i) => {
+                const tds = tr.querySelectorAll('td');
+                if (tds.length < 4) return;
+                const defect = cellText(tds[0]);
+                const cause = cellText(tds[1]);
+                const effectMHP = cellText(tds[2]);
+                const effectMAP = cellText(tds[3]);
+                if (!defect && !cause) return;
+                const key = defect + '|' + cause;
+                if (seen.has(key)) return;
+                seen.add(key);
+                result.defects.push({ id: Date.now() + i, defect, cause, effectMHP, effectMAP });
+              });
+              const blocks = doc.querySelectorAll('#optimal-conditions .condition-block, .condition-block');
+              blocks.forEach(block => {
+                const title = (block.querySelector('.condition-title')?.textContent || '').trim();
+                const value = (block.querySelector('.condition-value')?.textContent || '').replace(/\s+/g, ' ').trim();
+                if (!value) return;
+                if (/O₂|O2/i.test(title) && !/CO/i.test(title)) result.o2Target = value;
+                else if (/CO₂|CO2/i.test(title)) result.co2Target = value;
+                else if (/Temp/i.test(title)) result.tempCritical = value;
+              });
+              let acpText = '';
+              if (langDict && langDict.res_box_text) acpText = stripHtml(langDict.res_box_text);
+              else {
+                const acpHost = doc.querySelector('[data-translate="res_box_text"]') ||
+                                doc.querySelector('#anaerobic-respiration p') ||
+                                doc.querySelector('section .text-xs.text-gray-700');
+                acpText = acpHost?.textContent || '';
+              }
+              const acpMatch = acpText.match(/(\d+(?:[.,]\d+)?)\s*[-–]\s*(\d+(?:[.,]\d+)?)\s*%/);
+              if (acpMatch) result.o2Acp = `${acpMatch[1].replace(',', '.')}% - ${acpMatch[2].replace(',', '.')}%`;
+            } catch (e) { /* return partial result */ }
+            return result;
+          };
+          const applyProductSheet = (parsed) => {
+            if (!parsed) return;
+            setProject(p => ({
+              ...p,
+              ...(parsed.o2Target ? { o2Target: parsed.o2Target } : {}),
+              ...(parsed.co2Target ? { co2Target: parsed.co2Target } : {}),
+              ...(parsed.tempCritical ? { tempMin: parsed.tempCritical } : {}),
+              ...(parsed.o2Acp ? { acpO2: parsed.o2Acp } : {}),
+              defectsMatrix: parsed.defects && parsed.defects.length > 0 ? parsed.defects : (p.defectsMatrix || [])
+            }));
+          };
+          const handleProductSheetFile = (file) => {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const parsed = parseProductSheet(ev.target?.result || '', lang);
+              if (parsed.defects.length === 0 && !parsed.o2Target && !parsed.co2Target && !parsed.tempCritical) {
+                alert(rt.productSheetParseFail || 'Could not parse this product sheet.');
+                return;
+              }
+              applyProductSheet(parsed);
+            };
+            reader.onerror = () => alert(rt.productSheetParseFail || 'Could not read this product sheet.');
+            reader.readAsText(file);
+          };
+          const [productSheetDragOver, setProductSheetDragOver] = useState(false);
+          const handleProductSheetDrop = (e) => {
+            e.preventDefault();
+            setProductSheetDragOver(false);
+            const file = e.dataTransfer?.files?.[0];
+            if (file) handleProductSheetFile(file);
+          };
+
+          // === EVALUATION DAYS (Groups tab) ===
+          // Identity is by INDEX, not by day-value. Mirrors proposal.html so
+          // editing one card doesn't shift others during typing.
+          const addEvaluationDay = (groupId) => {
+            setGroups(prev => prev.map(g => {
+              if (g.id !== groupId) return g;
+              const numericDays = (g.measurements || []).map(m => parseFloat(m.day)).filter(d => !isNaN(d));
+              const lastDay = numericDays.length > 0 ? Math.max(...numericDays) : 0;
+              const sCount = g.specs?.sampleCount || 3;
+              const newSamples = Array.from({length: sCount}, (_, i) => ({ id: Date.now()+i, o2: '', co2: '', weight: '' }));
+              return {
+                ...g,
+                measurements: [...(g.measurements || []), {
+                  day: lastDay + 1, samples: newSamples,
+                  quality: 9, notes: '', images: [], qualityParams: [], evaluateQuality: true
+                }].sort((a,b) => parseFloat(a.day) - parseFloat(b.day))
+              };
+            }));
+          };
+          const removeEvaluationDay = (groupId, indexToRemove) => {
+            setGroups(prev => prev.map(g => {
+              if (g.id !== groupId) return g;
+              return { ...g, measurements: (g.measurements || []).filter((_, i) => i !== indexToRemove) };
+            }));
+          };
+          const updateEvaluationDay = (groupId, indexToUpdate, newDayValue) => {
+            setGroups(prev => prev.map(g => {
+              if (g.id !== groupId) return g;
+              return {
+                ...g,
+                measurements: (g.measurements || []).map((m, i) =>
+                  i === indexToUpdate ? { ...m, day: newDayValue } : m
+                )
+              };
+            }));
+          };
+
           // Supply Chain
           const addChainStep = () => setSupplyChain([...supplyChain, { stage: '', tempStart: '', tempEnd: '', daysStart: '', daysEnd: '', action: 'none' }]);
           const updateChainStep = (i, f, v) => { const n = [...supplyChain]; n[i][f] = v; setSupplyChain(n); };
@@ -1796,17 +2154,21 @@
           };
 
           // Modals
-          const openSampleModal = (groupId, index) => { 
-            const g = groups.find(x => x.id === groupId); 
+          const openSampleModal = (groupId, index) => {
+            const g = groups.find(x => x.id === groupId);
             const meas = g.measurements[index];
             const isEndDay = project.totalDuration && parseFloat(meas.day) === parseInt(project.totalDuration);
             const isRetailDay = project.retailOpenDays && parseFloat(meas.day) === (parseInt(project.totalDuration) + parseInt(project.retailOpenDays));
             const isEvaluationDay = parseFloat(meas.day) === 0 || isEndDay || isRetailDay;
             const isDayEditable = parseFloat(meas.day) !== 0 && !isEndDay && !isRetailDay;
             const day0 = g.measurements.find(m => parseFloat(m.day) === 0);
-            
-            setEditingMeasurement({ groupId, index, data: meas, day0Samples: day0?.samples, isEvaluationDay, isDayEditable, projectCriteria: project.criteria, startWeight: g.specs.startWeight, projectTotalDuration: project.totalDuration }); 
-            setSampleModalOpen(true); 
+            // Hide gas inputs when the group is not using a Modified Atmosphere
+            // Packaging strategy — for ambient (MHP / Open) variants the O₂/CO₂
+            // fields are meaningless.
+            const isMAP = !g.specs?.atmosphereStrategy || g.specs.atmosphereStrategy === 'MAP';
+
+            setEditingMeasurement({ groupId, index, data: meas, day0Samples: day0?.samples, isEvaluationDay, isDayEditable, projectCriteria: project.criteria, startWeight: g.specs.startWeight, projectTotalDuration: project.totalDuration, isMAP });
+            setSampleModalOpen(true);
           };
           
           const openDetailsModal = (groupId, index) => { 
@@ -1859,7 +2221,22 @@
             if (p > 0) meas.push({ day: p, samples: genS(false), quality: 9, notes: 'End Packing', images: [], qualityParams: [], evaluateQuality: true });
             if (p > 0 && o > 0) meas.push({ day: p + o, samples: genS(false), quality: 9, notes: 'Retail Simulation (Open)', images: [], qualityParams: [], evaluateQuality: true });
             
-            setGroups([...groups, { id: newId, name: `Variant ${groups.length + 1}`, specs: { ...(groups[0]?.specs||{}), sampleCount: sCount }, measurements: meas, predictedImage: null }]);
+            setGroups([...groups, { 
+                id: newId, 
+                name: `Variant ${groups.length + 1}`, 
+                specs: { 
+                    ...(groups[0]?.specs||{}), 
+                    sampleCount: sCount,
+                    packaging: project.packagingType || 'Retail',
+                    material: project.material || '',
+                    length: project.length || '',
+                    width: project.width || '',
+                    height: project.height || '',
+                    startWeight: project.startWeight || groups[0]?.specs?.startWeight || ''
+                }, 
+                measurements: meas, 
+                predictedImage: null 
+            }]);
             setActiveGroupId(newId);
           };
 
@@ -1895,7 +2272,7 @@
             <div className="min-h-screen font-sans text-slate-800 bg-slate-50 pb-20">
               
               {/* Modals */}
-              <SampleModal isOpen={sampleModalOpen} onClose={() => setSampleModalOpen(false)} data={editingMeasurement ? editingMeasurement.data : {}} onSave={saveSampleData} day0Samples={editingMeasurement ? editingMeasurement.day0Samples : null} projectCriteria={project.criteria || []} isEvaluationDay={editingMeasurement ? editingMeasurement.isEvaluationDay : false} isDayEditable={editingMeasurement ? editingMeasurement.isDayEditable : false} startWeight={editingMeasurement ? editingMeasurement.startWeight : 0} projectTotalDuration={project.totalDuration} rt={rt} />
+              <SampleModal isOpen={sampleModalOpen} onClose={() => setSampleModalOpen(false)} data={editingMeasurement ? editingMeasurement.data : {}} onSave={saveSampleData} day0Samples={editingMeasurement ? editingMeasurement.day0Samples : null} projectCriteria={project.criteria || []} isEvaluationDay={editingMeasurement ? editingMeasurement.isEvaluationDay : false} isDayEditable={editingMeasurement ? editingMeasurement.isDayEditable : false} startWeight={editingMeasurement ? editingMeasurement.startWeight : 0} projectTotalDuration={project.totalDuration} isMAP={editingMeasurement ? editingMeasurement.isMAP : true} rt={rt} />
               <DetailsModal isOpen={detailsModalOpen} onClose={() => setDetailsModalOpen(false)} data={editingMeasurement ? editingMeasurement.data : {}} onSave={saveDetailsData} rt={rt} />
 
               {pendingImageReplace && (
@@ -1912,6 +2289,64 @@
                            setGroups(prev => prev.map(g => g.id === pendingImageReplace.groupId ? { ...g, predictedImage: pendingImageReplace.result } : g));
                            setPendingImageReplace(null);
                        }} className="px-6 py-3 bg-orange-600 text-white rounded-full hover:bg-orange-700 font-bold shadow-lg shadow-orange-200 transition">{rt.overwrite}</button>
+                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === PRODUCT SELECTION MODAL ===
+               * Shown when an intake JSON contains more than one product. The
+               * user picks which product to load into this report; the
+               * selected product is then passed to loadIntakeProduct().
+               */}
+              {pendingProductSelection && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 print:hidden">
+                  <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-2xl w-full border-t-8 transform transition-all max-h-[90vh] flex flex-col" style={{ borderColor: BRAND.colors.green }}>
+                     <div className="flex items-start justify-between gap-4 mb-6">
+                        <div className="flex items-center gap-4">
+                           <div className="p-3 bg-green-50 rounded-xl shrink-0">
+                              <Package size={28} color={BRAND.colors.green} />
+                           </div>
+                           <div>
+                              <h3 className="font-extrabold text-xl text-slate-800 tracking-tight">{rt.selectProductTitle}</h3>
+                              <p className="text-sm text-slate-500 mt-1 leading-relaxed">{rt.selectProductDesc}</p>
+                           </div>
+                        </div>
+                        <button onClick={() => setPendingProductSelection(null)} className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition shrink-0" title={rt.cancel}>
+                          <X size={20}/>
+                        </button>
+                     </div>
+                     <p className="text-xs font-bold tracking-wide text-slate-500 uppercase mb-3">{rt.selectProductHint}</p>
+                     <div className="space-y-3 overflow-y-auto pr-1 -mr-1">
+                       {pendingProductSelection.products.map((p, idx) => {
+                         const name = p?.name || rt.noProductName;
+                         const meta = [p?.type, p?.origin, p?.processingType].filter(Boolean).join(' • ');
+                         return (
+                           <button
+                             key={idx}
+                             type="button"
+                             onClick={() => confirmProductSelection(idx)}
+                             className="w-full text-left p-5 bg-slate-50 hover:bg-green-50 border-2 border-slate-200 hover:border-green-400 rounded-2xl transition-all flex items-center gap-4 group shadow-sm hover:shadow-md"
+                           >
+                             {p?.photo ? (
+                               <img src={p.photo} alt="" className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"/>
+                             ) : (
+                               <div className="w-14 h-14 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                                 <Package size={22} className="text-slate-300" />
+                               </div>
+                             )}
+                             <div className="flex-1 min-w-0">
+                                <div className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">{rt.productLabel} {idx + 1}</div>
+                                <div className="font-extrabold text-base text-slate-800 truncate">{name}</div>
+                                {meta && <div className="text-xs text-slate-500 mt-0.5 truncate">{meta}</div>}
+                             </div>
+                             <ChevronRight size={20} className="text-slate-400 group-hover:text-green-600 shrink-0 transition-colors"/>
+                           </button>
+                         );
+                       })}
+                     </div>
+                     <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                       <button onClick={() => setPendingProductSelection(null)} className="px-6 py-3 bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200 font-bold transition">{rt.cancel}</button>
                      </div>
                   </div>
                 </div>
@@ -2179,9 +2614,9 @@
                        </div>
                     </section>
 
-                    {/* ========== DEEL 3 — PRODUCT DETAILS ==========
-                        Combines Proposal-style A/B subsections with the
-                        report-specific Respiration Data block. */}
+                    {/* ========== DEEL 3 — PRODUCT DETAILS (A / B / C) ==========
+                        Mirrors proposal.html: A = Product & Packaging, B =
+                        Challenge & Objectives, C = Current Supply Chain. */}
                     <section className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
                        <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: BRAND.colors.green }}></div>
                        <div className="flex items-center justify-between gap-4 border-b-2 border-slate-100 pb-6 mb-8">
@@ -2191,29 +2626,22 @@
                            </div>
                            <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{rt.secProduct}</h2>
                          </div>
-
                          {/* UNIT TOGGLE — mirrors Proposal */}
                          <div className="flex bg-slate-100 p-1 rounded-xl shadow-inner border border-slate-200">
-                             <button
-                               type="button"
-                               onClick={() => { if (unitSystem !== 'metric') handleUnitToggle(); }}
-                               className={`px-4 py-2 rounded-lg transition-all flex flex-col items-center leading-tight ${unitSystem === 'metric' ? 'bg-white text-slate-800 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
-                             >
+                             <button type="button" onClick={() => { if (unitSystem !== 'metric') handleUnitToggle(); }}
+                               className={`px-4 py-2 rounded-lg transition-all flex flex-col items-center leading-tight ${unitSystem === 'metric' ? 'bg-white text-slate-800 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}>
                                  <span className="text-sm font-bold">{rt.metric}</span>
                                  <span className="text-[10px] font-medium tracking-wide opacity-70 mt-0.5">(kg/meter)</span>
                              </button>
-                             <button
-                               type="button"
-                               onClick={() => { if (unitSystem !== 'imperial') handleUnitToggle(); }}
-                               className={`px-4 py-2 rounded-lg transition-all flex flex-col items-center leading-tight ${unitSystem === 'imperial' ? 'bg-white text-slate-800 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
-                             >
+                             <button type="button" onClick={() => { if (unitSystem !== 'imperial') handleUnitToggle(); }}
+                               className={`px-4 py-2 rounded-lg transition-all flex flex-col items-center leading-tight ${unitSystem === 'imperial' ? 'bg-white text-slate-800 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}>
                                  <span className="text-sm font-bold">{rt.imperial}</span>
                                  <span className="text-[10px] font-medium tracking-wide opacity-70 mt-0.5">(inch/lb)</span>
                              </button>
                          </div>
                        </div>
 
-                       {/* A. Product Information */}
+                       {/* A. Product & Packaging */}
                        <div className="mb-10">
                          <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-3">
                             <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center"><Target size={16} className="text-green-700"/></div>
@@ -2226,7 +2654,7 @@
                              <input type="text" className={`${inputClass} text-xl font-bold py-4`} value={project.productName || ''} onChange={e => handleProjectChange('productName', e.target.value)} />
                            </div>
 
-                           <div className="md:col-span-1 md:row-span-3 flex flex-col">
+                           <div className="md:col-span-1 md:row-span-4 flex flex-col">
                               <label className={labelClass}>{rt.refPhoto}</label>
                               <div className="border-2 border-dashed border-slate-300 rounded-2xl w-full aspect-square max-w-[240px] flex flex-col items-center justify-center text-center bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer relative overflow-hidden mx-auto shadow-sm group mt-1">
                                  <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer z-10" onChange={(e) => handleImgUpload(e, 'startImage')} />
@@ -2259,168 +2687,316 @@
                            </div>
 
                            <div className="md:col-span-1"><label className={labelClass}>{rt.maturityStage}</label><input type="text" className={inputClass} value={project.maturityStage || ''} onChange={e => handleProjectChange('maturityStage', e.target.value)} /></div>
-                           <div className="md:col-span-2"><label className={labelClass}>{rt.postHarvest}</label><input type="text" className={inputClass} value={project.postHarvestTreatment || ''} onChange={e => handleProjectChange('postHarvestTreatment', e.target.value)} /></div>
+                           <div className="md:col-span-1"><label className={labelClass}>{rt.postHarvest}</label><input type="text" className={inputClass} value={project.postHarvestTreatment || ''} onChange={e => handleProjectChange('postHarvestTreatment', e.target.value)} /></div>
+
+                           {/* PACKAGING / MATERIAL / WEIGHT row + DIMENSIONS card */}
+                           {(() => {
+                             const isBulk = project.packagingType === 'Cube crate' || project.packagingType === 'Pallet';
+                             const dimUnit = globalConfig.getUnitLabel ? globalConfig.getUnitLabel('length', unitSystem, isBulk) : (isBulk ? 'cm' : 'mm');
+                             const wgtUnit = globalConfig.getUnitLabel ? globalConfig.getUnitLabel('weight', unitSystem, isBulk) : (isBulk ? 'kg' : 'g');
+                             const isPillow = project.packagingType === 'Pillow Bag';
+                             return (
+                               <div className="md:col-span-3 space-y-6 pt-4 mt-2">
+                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                                     <div>
+                                       <label className={labelClass}>{rt.packType} <span className="text-red-500">*</span></label>
+                                       <select className={`${inputClass} cursor-pointer bg-white`} value={project.packagingType || 'Retail'} onChange={e => handleProjectChange('packagingType', e.target.value)}>
+                                         {PACKAGING_TYPES.map(t => <option key={t} value={t}>{getI18nLabel(PACKAGING_TYPES_I18N, t, lang)}</option>)}
+                                       </select>
+                                     </div>
+                                     <div>
+                                       <label className={labelClass}>{rt.currentMaterial} <span className="text-red-500">*</span></label>
+                                       <input type="text" className={inputClass} value={project.material || ''} onChange={e => handleProjectChange('material', e.target.value)} />
+                                     </div>
+                                     <div>
+                                       <label className={labelClass}>{rt.netWeight} <span className="text-red-500">*</span></label>
+                                       <div className="relative">
+                                          <input type="number" className={`${inputClass} font-extrabold text-blue-900 pr-12`} value={project.startWeight || ''} onChange={e => handleProjectChange('startWeight', e.target.value)} />
+                                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">{wgtUnit}</span>
+                                       </div>
+                                     </div>
+                                 </div>
+
+                                 <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-2xl border border-slate-200 shadow-sm mt-2">
+                                    <label className="block mb-4 text-xs font-extrabold tracking-widest text-blue-800 uppercase border-b border-blue-200 pb-2">{rt.dimens}</label>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                                      <div>
+                                        <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">{rt.len} <span className="text-red-500">*</span></label>
+                                        <div className="relative">
+                                          <input type="number" className={`${inputClass} pl-4 pr-12`} value={project.length || ''} onChange={e => handleProjectChange('length', e.target.value)} />
+                                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">{dimUnit}</span>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">{isPillow ? rt.widSeal : rt.wid} <span className="text-red-500">*</span></label>
+                                        <div className="relative">
+                                          <input type="number" className={`${inputClass} pl-4 pr-12`} value={project.width || ''} onChange={e => handleProjectChange('width', e.target.value)} />
+                                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">{dimUnit}</span>
+                                        </div>
+                                      </div>
+                                      {!isPillow && (
+                                        <div>
+                                          <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">{rt.hei} <span className="text-red-500">*</span></label>
+                                          <div className="relative">
+                                            <input type="number" className={`${inputClass} pl-4 pr-12`} value={project.height || ''} onChange={e => handleProjectChange('height', e.target.value)} />
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">{dimUnit}</span>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                 </div>
+                               </div>
+                             );
+                           })()}
+
+                           {/* Respiration Data (kept — feeds the gas analysis section) */}
+                           <div className="md:col-span-3 mt-2 bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                              <label className="block mb-4 text-xs font-extrabold tracking-widest text-blue-800 uppercase border-b border-blue-200 pb-2">{rt.respirationData}</label>
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                <div><label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">RR O₂</label><input type="text" className={inputClass} value={project.rrO2 || ''} onChange={e => handleProjectChange('rrO2', e.target.value)} /></div>
+                                <div><label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">RR CO₂</label><input type="text" className={inputClass} value={project.rrCO2 || ''} onChange={e => handleProjectChange('rrCO2', e.target.value)} /></div>
+                                <div><label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">{rt.measuredAt}</label><input type="text" className={inputClass} value={project.rrTemp || ''} onChange={e => handleProjectChange('rrTemp', e.target.value)} /></div>
+                              </div>
+                           </div>
+
+                           {/* Quality Criteria — click-to-toggle (matches Intake/Proposal) */}
+                           <div className="md:col-span-3 mt-4">
+                              <label className="block mb-2 text-sm font-extrabold tracking-wide text-slate-800 uppercase flex items-center gap-2">
+                                 <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center"><Beaker size={16} className="text-blue-700"/></div>
+                                 {rt.qualityCrit}
+                              </label>
+                              <p className="text-sm text-slate-500 mb-4">{rt.qualityCritDesc}</p>
+                              <div className="flex flex-wrap gap-3">
+                                 {DEFAULT_CRITERIA.map(c => {
+                                   const isSelected = (project.criteria || []).includes(c);
+                                   return (
+                                     <button key={c} type="button" onClick={() => toggleCriteria(c)}
+                                       className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all border shadow-sm flex items-center gap-2 ${isSelected ? 'bg-blue-50 text-blue-800 border-blue-400 ring-2 ring-blue-500/20 transform scale-[1.02]' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}>
+                                       {getI18nLabel(DEFAULT_CRITERIA_I18N, c, lang)} {isSelected && <CheckCircle size={16} className="text-blue-600" />}
+                                     </button>
+                                   );
+                                 })}
+                              </div>
+                           </div>
                          </div>
                        </div>
 
-                       {/* B. Weight & Respiration Data — report-specific */}
-                       <div>
+                       {/* B. Challenge & Objectives */}
+                       <div className="mb-10">
                          <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-3">
-                            <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center"><Beaker size={16} className="text-green-700"/></div>
+                            <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center"><AlertCircle size={16} className="text-orange-700"/></div>
                             <h3 className="font-extrabold text-lg text-slate-800">{rt.secB}</h3>
                          </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                           <div>
+                             <label className="block mb-3 text-xs font-bold tracking-wide text-orange-700 uppercase flex items-center gap-2"><AlertCircle size={16}/> {rt.currentChallenge}</label>
+                             <textarea rows="4" className={`${inputClass} resize-y focus:ring-orange-500 focus:border-orange-500`} value={project.currentChallenge || ''} onChange={e => handleProjectChange('currentChallenge', e.target.value)} />
+                           </div>
+                           <div>
+                             <label className="block mb-3 text-xs font-bold tracking-wide text-green-700 uppercase flex items-center gap-2"><CheckCircle size={16}/> {rt.trialTarget}</label>
+                             <textarea rows="4" className={`${inputClass} resize-y focus:ring-green-500 focus:border-green-500`} value={project.trialTarget || ''} onChange={e => handleProjectChange('trialTarget', e.target.value)} />
+                           </div>
+                         </div>
+                       </div>
 
-                         {(() => {
-                           const wgtUnit = globalConfig.getUnitLabel ? globalConfig.getUnitLabel('weight', unitSystem, false) : (unitSystem === 'imperial' ? 'oz' : 'g');
-                           return (
-                             <div className="space-y-6">
-                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                 <div>
-                                   <label className={labelClass}>{rt.netWeight} <span className="text-red-500">*</span></label>
-                                   <div className="relative">
-                                      <input type="number" className={`${inputClass} font-extrabold text-blue-900 pr-12`} value={project.startWeight || ''} onChange={e => handleProjectChange('startWeight', e.target.value)} />
-                                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">{wgtUnit}</span>
-                                   </div>
+                       {/* C. Current Supply Chain */}
+                       <div>
+                         <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-3">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center"><Truck size={16} className="text-indigo-700"/></div>
+                            <h3 className="font-extrabold text-lg text-slate-800">{rt.secC}</h3>
+                         </div>
+
+                         <div className="mb-8 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
+                           <label className="block mb-3 text-xs font-bold tracking-wide text-indigo-900 uppercase">{rt.transportMode} <span className="text-red-500">*</span></label>
+                           <div className="flex flex-wrap gap-4">
+                             {TRANSPORT_MODES.map(mode => (
+                               <button key={mode} onClick={() => handleTransportModeToggle(mode)}
+                                 className={`px-5 py-3 rounded-xl text-sm font-bold transition-all border shadow-sm flex items-center gap-2 ${project.transportMode === mode || project.transportModes?.includes(mode) ? 'bg-indigo-600 text-white border-indigo-700 ring-4 ring-indigo-600/20 transform scale-[1.02]' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}`}>
+                                 {getI18nLabel(TRANSPORT_MODES_I18N, mode, lang)} {(project.transportMode === mode || project.transportModes?.includes(mode)) && <CheckCircle size={16} className="text-white"/>}
+                               </button>
+                             ))}
+                           </div>
+                         </div>
+
+                         <div className="space-y-3">
+                           <label className="block mb-2 text-xs font-bold tracking-wide text-slate-500 uppercase">{rt.supplyChainFlow}</label>
+                           <div className="hidden lg:grid grid-cols-[80px_1fr_150px_150px_130px_40px] items-center gap-4 px-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                              <div>{rt.step}</div>
+                              <div>{rt.phase} <span className="text-red-500">*</span></div>
+                              <div className="text-center">{rt.temp} <span className="text-red-500">*</span></div>
+                              <div className="text-center">{rt.days} <span className="text-red-500">*</span></div>
+                              <div>{rt.action}</div>
+                              <div></div>
+                           </div>
+                           {supplyChain.map((step, idx) => (
+                              <div key={idx} className="grid grid-cols-1 lg:grid-cols-[80px_1fr_150px_150px_130px_40px] items-start lg:items-center gap-4 bg-white hover:bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-sm transition-all group">
+                                 <div className="flex items-center gap-2 justify-between lg:justify-start">
+                                    <div className="flex lg:flex-col gap-1">
+                                       <button onClick={() => moveChainStep(idx, 'up')} disabled={idx === 0} className="p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded disabled:opacity-30 transition-colors"><ChevronUp size={16}/></button>
+                                       <button onClick={() => moveChainStep(idx, 'down')} disabled={idx === supplyChain.length - 1} className="p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded disabled:opacity-30 transition-colors"><ChevronDown size={16}/></button>
+                                    </div>
+                                    <div className="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-sm shadow-sm">{idx + 1}</div>
+                                    <button onClick={() => removeChainStep(idx)} className="lg:hidden p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={18}/></button>
                                  </div>
-                               </div>
-
-                               <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-2xl border border-slate-200 shadow-sm">
-                                  <label className="block mb-4 text-xs font-extrabold tracking-widest text-blue-800 uppercase border-b border-blue-200 pb-2">{rt.respirationData}</label>
-                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                                    <div><label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">RR O₂</label><input type="text" className={inputClass} value={project.rrO2 || ''} onChange={e => handleProjectChange('rrO2', e.target.value)} /></div>
-                                    <div><label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">RR CO₂</label><input type="text" className={inputClass} value={project.rrCO2 || ''} onChange={e => handleProjectChange('rrCO2', e.target.value)} /></div>
-                                    <div><label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2 block">{rt.measuredAt}</label><input type="text" className={inputClass} value={project.rrTemp || ''} onChange={e => handleProjectChange('rrTemp', e.target.value)} /></div>
-                                  </div>
-                               </div>
-                             </div>
-                           );
-                         })()}
+                                 <div className="w-full">
+                                    <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.phase} <span className="text-red-500">*</span></label>
+                                    {idx === 2 ? (
+                                       <select className={`${inputClass} py-2.5 font-bold w-full`} value={step.stage || ''} onChange={e => updateChainStep(idx, 'stage', e.target.value)}>
+                                         <option>{rt.transportRoad}</option><option>{rt.transportSea}</option><option>{rt.transportAir}</option><option>{rt.transportStorage}</option>
+                                       </select>
+                                     ) : (
+                                       <input type="text" className={`${inputClass} py-2.5 font-bold w-full`} value={step.stage || ''} placeholder={rt.stagePlaceholder} onChange={e => updateChainStep(idx, 'stage', e.target.value)} />
+                                     )}
+                                 </div>
+                                 <div className="w-full">
+                                    <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.temp} <span className="text-red-500">*</span></label>
+                                    <div className="flex items-center gap-1.5">
+                                       <input type="number" className={`${narrowInputClass} w-full`} value={step.tempStart || ''} placeholder={rt.min} onChange={e => updateChainStep(idx, 'tempStart', e.target.value)} />
+                                       <span className="text-slate-400 font-bold shrink-0">-</span>
+                                       <input type="number" className={`${narrowInputClass} w-full`} value={step.tempEnd || ''} placeholder={rt.max} onChange={e => updateChainStep(idx, 'tempEnd', e.target.value)} />
+                                    </div>
+                                 </div>
+                                 <div className="w-full">
+                                    <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.days} <span className="text-red-500">*</span></label>
+                                    <div className="flex items-center gap-1.5">
+                                       <input type="number" className={`${narrowInputClass} w-full`} value={step.daysStart || ''} placeholder={rt.min} onChange={e => updateChainStep(idx, 'daysStart', e.target.value)} />
+                                       <span className="text-slate-400 font-bold shrink-0">-</span>
+                                       <input type="number" className={`${narrowInputClass} w-full`} value={step.daysEnd || ''} placeholder={rt.max} onChange={e => updateChainStep(idx, 'daysEnd', e.target.value)} />
+                                    </div>
+                                 </div>
+                                 <div className="w-full">
+                                    <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.action}</label>
+                                    <select className={`${inputClass} py-2.5 font-bold px-2 w-full text-slate-700`} value={step.action || 'none'} onChange={e => updateChainStep(idx, 'action', e.target.value)}>
+                                      <option value="none">{rt.actNone}</option>
+                                      <option value="pack" className="text-green-700">{rt.actPack}</option>
+                                      <option value="unpack" className="text-red-700">{rt.actUnpack}</option>
+                                    </select>
+                                 </div>
+                                 <div className="hidden lg:flex justify-center w-full">
+                                    <button onClick={() => removeChainStep(idx)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title={rt.removeStep}>
+                                      <Trash2 size={20}/>
+                                    </button>
+                                 </div>
+                              </div>
+                           ))}
+                           <button onClick={addChainStep} className="w-full py-4 mt-4 border-2 border-dashed border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
+                             <div className="bg-white p-1.5 rounded-lg shadow-sm"><Plus size={16} /></div>
+                             {rt.addStep}
+                           </button>
+                         </div>
                        </div>
                     </section>
 
-                    {/* ========== DEEL 4 — GOALS & CHALLENGES ========== */}
+                    {/* ========== DEEL 6 — PRODUCT CHARACTERISTICS & DEFECT PREVENTION ========== */}
                     <section className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
                        <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: BRAND.colors.green }}></div>
-                       <div className="flex items-center justify-between border-b-2 border-slate-100 pb-6 mb-8">
+                       <div className="flex items-center justify-between border-b-2 border-slate-100 pb-6 mb-6">
                          <div className="flex items-center gap-4">
                            <div className="p-3 bg-green-50 rounded-xl">
-                             <Target size={28} color={BRAND.colors.green} />
+                             <AlertTriangle size={28} color={BRAND.colors.green} />
                            </div>
-                           <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{rt.secGoals}</h2>
+                           <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{rt.secDefects}</h2>
                          </div>
                        </div>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                         <div>
-                           <label className="block mb-3 text-xs font-bold tracking-wide text-orange-700 uppercase flex items-center gap-2"><AlertCircle size={16}/> {rt.currentChallenge}</label>
-                           <textarea rows="4" className={`${inputClass} resize-y focus:ring-orange-500 focus:border-orange-500`} value={project.currentChallenge || ''} onChange={e => handleProjectChange('currentChallenge', e.target.value)} />
+
+                       {/* === PRODUCT-SHEET DROP ZONE === */}
+                       <div
+                         onDragOver={e => { e.preventDefault(); if (!productSheetDragOver) setProductSheetDragOver(true); }}
+                         onDragLeave={() => setProductSheetDragOver(false)}
+                         onDrop={handleProductSheetDrop}
+                         className={`mb-8 border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col sm:flex-row items-center gap-5 ${productSheetDragOver ? 'border-green-500 bg-green-50' : 'border-slate-300 bg-slate-50/60 hover:border-green-300 hover:bg-green-50/30'}`}
+                       >
+                         <div className={`shrink-0 w-14 h-14 rounded-xl flex items-center justify-center shadow-sm ${productSheetDragOver ? 'bg-green-100' : 'bg-white border border-slate-200'}`}>
+                           <FileArchive size={28} color={BRAND.colors.green} />
                          </div>
-                         <div>
-                           <label className="block mb-3 text-xs font-bold tracking-wide text-green-700 uppercase flex items-center gap-2"><CheckCircle size={16}/> {rt.trialTarget}</label>
-                           <textarea rows="4" className={`${inputClass} resize-y focus:ring-green-500 focus:border-green-500`} value={project.trialTarget || ''} onChange={e => handleProjectChange('trialTarget', e.target.value)} />
+                         <div className="flex-1 text-center sm:text-left">
+                           <div className="font-extrabold text-slate-800 text-base">{productSheetDragOver ? rt.productSheetDropActive : rt.productSheetDropTitle}</div>
+                           <div className="text-sm text-slate-500 mt-1 leading-relaxed">{rt.productSheetDropDesc}</div>
+                         </div>
+                         <label className="cursor-pointer bg-white border border-slate-300 text-slate-700 px-5 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 hover:border-green-400 transition-all shrink-0 whitespace-nowrap shadow-sm flex items-center gap-2">
+                           <Upload size={16} className="text-green-700"/>
+                           {rt.productSheetBrowse}
+                           <input type="file" accept=".htm,.html,text/html" className="hidden"
+                             onClick={e => { e.target.value = null; }}
+                             onChange={e => handleProductSheetFile(e.target.files?.[0])} />
+                         </label>
+                       </div>
+
+                       {/* === PRODUCT PROPERTIES GRID === */}
+                       <div className="mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                         <h3 className="font-extrabold text-base text-slate-800 mb-1">{rt.productProperties}</h3>
+                         <p className="text-xs text-slate-500 mb-5 leading-relaxed">{rt.productPropertiesDesc}</p>
+                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                           <div>
+                             <label className={labelClass}>{rt.o2TargetLabel}</label>
+                             <input type="text" className={inputClass} placeholder={rt.o2TargetPlaceholder} value={project.o2Target || ''} onChange={e => handleProjectChange('o2Target', e.target.value)} />
+                           </div>
+                           <div>
+                             <label className={labelClass}>{rt.o2AcpLabel}</label>
+                             <input type="text" className={inputClass} placeholder={rt.o2AcpPlaceholder} value={project.acpO2 || ''} onChange={e => handleProjectChange('acpO2', e.target.value)} />
+                           </div>
+                           <div className="hidden lg:block"></div>
+                           <div>
+                             <label className={labelClass}>{rt.co2TargetLabel}</label>
+                             <input type="text" className={inputClass} placeholder={rt.co2TargetPlaceholder} value={project.co2Target || ''} onChange={e => handleProjectChange('co2Target', e.target.value)} />
+                           </div>
+                           <div>
+                             <label className={labelClass}>{rt.co2CriticalLabel}</label>
+                             <input type="text" className={inputClass} placeholder={rt.co2CriticalPlaceholder} value={project.co2Max || ''} onChange={e => handleProjectChange('co2Max', e.target.value)} />
+                           </div>
+                           <div className="hidden lg:block"></div>
+                           <div>
+                             <label className={labelClass}>{rt.tempCriticalLabel}</label>
+                             <input type="text" className={inputClass} placeholder={rt.tempCriticalPlaceholder} value={project.tempMin || ''} onChange={e => handleProjectChange('tempMin', e.target.value)} />
+                           </div>
+                           <div className="sm:col-span-2">
+                             <label className={labelClass}>{rt.ethyleneProfileLabel}</label>
+                             <input type="text" className={inputClass} placeholder={rt.ethyleneProfilePlaceholder} value={project.ethyleneProfile || ''} onChange={e => handleProjectChange('ethyleneProfile', e.target.value)} />
+                           </div>
                          </div>
                        </div>
-                    </section>
 
-                    {/* ========== DEEL 5 — SUPPLY CHAIN ========== */}
-                    <section className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: BRAND.colors.green }}></div>
-                      <div className="flex items-center justify-between border-b-2 border-slate-100 pb-6 mb-8">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 bg-green-50 rounded-xl">
-                            <Truck size={28} color={BRAND.colors.green} />
-                          </div>
-                          <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{rt.secSupplyChain}</h2>
-                        </div>
-                      </div>
-                      <div className="mb-8 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
-                        <label className="block mb-3 text-xs font-bold tracking-wide text-indigo-900 uppercase">{rt.transportMode} <span className="text-red-500">*</span></label>
-                        <div className="flex flex-wrap gap-4">
-                          {TRANSPORT_MODES.map(mode => (
-                            <button 
-                              key={mode} 
-                              onClick={() => handleTransportModeToggle(mode)}
-                              className={`px-5 py-3 rounded-xl text-sm font-bold transition-all border shadow-sm flex items-center gap-2 ${project.transportMode === mode || project.transportModes?.includes(mode) ? 'bg-indigo-600 text-white border-indigo-700 ring-4 ring-indigo-600/20 transform scale-[1.02]' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}`}
-                            >
-                              {getI18nLabel(TRANSPORT_MODES_I18N, mode, lang)} {(project.transportMode === mode || project.transportModes?.includes(mode)) && <CheckCircle size={16} className="text-white"/>}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="space-y-3">
-                        <label className="block mb-2 text-xs font-bold tracking-wide text-slate-500 uppercase">{rt.supplyChainFlow}</label>
-                        
-                        <div className="hidden lg:grid grid-cols-[80px_1fr_150px_150px_130px_40px] items-center gap-4 px-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
-                           <div>{rt.step}</div>
-                           <div>{rt.phase} <span className="text-red-500">*</span></div>
-                           <div className="text-center">{rt.temp} <span className="text-red-500">*</span></div>
-                           <div className="text-center">{rt.days} <span className="text-red-500">*</span></div>
-                           <div>{rt.action}</div>
-                           <div></div>
-                        </div>
+                       <h3 className="font-extrabold text-base text-slate-800 mb-1">{rt.defectsMatrixSubtitle}</h3>
+                       <p className="text-sm text-slate-500 mb-6 leading-relaxed">{rt.defectsMatrixDesc}</p>
 
-                        {supplyChain.map((step, idx) => (
-                           <div key={idx} className="grid grid-cols-1 lg:grid-cols-[80px_1fr_150px_150px_130px_40px] items-start lg:items-center gap-4 bg-white hover:bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-sm transition-all group">
-                              <div className="flex items-center gap-2 justify-between lg:justify-start">
-                                 <div className="flex lg:flex-col gap-1">
-                                    <button onClick={() => moveChainStep(idx, 'up')} disabled={idx === 0} className="p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded disabled:opacity-30 transition-colors"><ChevronUp size={16}/></button>
-                                    <button onClick={() => moveChainStep(idx, 'down')} disabled={idx === supplyChain.length - 1} className="p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded disabled:opacity-30 transition-colors"><ChevronDown size={16}/></button>
-                                 </div>
-                                 <div className="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
-                                    {idx + 1}
-                                 </div>
-                                 <button onClick={() => removeChainStep(idx)} className="lg:hidden p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={18}/></button>
-                              </div>
-                              
-                              <div className="w-full">
-                                 <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.phase} <span className="text-red-500">*</span></label>
-                                 {idx === 2 ? (
-                                    <select className={`${inputClass} py-2.5 font-bold w-full`} value={step.stage || ''} onChange={e => updateChainStep(idx, 'stage', e.target.value)}>
-                                      <option>{rt.transportRoad}</option>
-                                      <option>{rt.transportSea}</option>
-                                      <option>{rt.transportAir}</option>
-                                      <option>{rt.transportStorage}</option>
-                                    </select>
-                                  ) : (
-                                    <input type="text" className={`${inputClass} py-2.5 font-bold w-full`} value={step.stage || ''} placeholder={rt.stagePlaceholder} onChange={e => updateChainStep(idx, 'stage', e.target.value)} />
-                                  )}
-                              </div>
-                              
-                              <div className="w-full">
-                                 <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.temp} <span className="text-red-500">*</span></label>
-                                 <div className="flex items-center gap-1.5">
-                                    <input type="number" className={`${narrowInputClass} w-full`} value={step.tempStart || ''} placeholder={rt.min} onChange={e => updateChainStep(idx, 'tempStart', e.target.value)} />
-                                    <span className="text-slate-400 font-bold shrink-0">-</span>
-                                    <input type="number" className={`${narrowInputClass} w-full`} value={step.tempEnd || ''} placeholder={rt.max} onChange={e => updateChainStep(idx, 'tempEnd', e.target.value)} />
-                                 </div>
-                              </div>
-                              
-                              <div className="w-full">
-                                 <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.days} <span className="text-red-500">*</span></label>
-                                 <div className="flex items-center gap-1.5">
-                                    <input type="number" className={`${narrowInputClass} w-full`} value={step.daysStart || ''} placeholder={rt.min} onChange={e => updateChainStep(idx, 'daysStart', e.target.value)} />
-                                    <span className="text-slate-400 font-bold shrink-0">-</span>
-                                    <input type="number" className={`${narrowInputClass} w-full`} value={step.daysEnd || ''} placeholder={rt.max} onChange={e => updateChainStep(idx, 'daysEnd', e.target.value)} />
-                                 </div>
-                              </div>
-                              
-                              <div className="w-full">
-                                 <label className="lg:hidden block mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">{rt.action}</label>
-                                 <select className={`${inputClass} py-2.5 font-bold px-2 w-full text-slate-700`} value={step.action || 'none'} onChange={e => updateChainStep(idx, 'action', e.target.value)}>
-                                   <option value="none">{rt.actNone}</option>
-                                   <option value="pack" className="text-green-700">{rt.actPack}</option>
-                                   <option value="unpack" className="text-red-700">{rt.actUnpack}</option>
-                                 </select>
-                              </div>
-                              
-                              <div className="hidden lg:flex justify-center w-full">
-                                 <button onClick={() => removeChainStep(idx)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title={rt.removeStep}>
-                                   <Trash2 size={20}/>
-                                 </button>
-                              </div>
-                           </div>
-                        ))}
-                        <button onClick={addChainStep} className="w-full py-4 mt-4 border-2 border-dashed border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm"><div className="bg-white p-1.5 rounded-lg shadow-sm"><Plus size={16}/></div> {rt.addStep}</button>
-                      </div>
+                       <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                         <table className="w-full text-sm bg-white">
+                           <thead className="bg-slate-100 border-b border-slate-200">
+                             <tr className="text-left text-slate-600 uppercase tracking-wider text-[10px] font-bold">
+                               <th className="p-3" style={{ color: '#004B87' }}>{rt.defectColLabel}</th>
+                               <th className="p-3" style={{ color: '#004B87' }}>{rt.causeColLabel}</th>
+                               <th className="p-3" style={{ color: '#5B9BD5' }}>{rt.effectMHPColLabel}</th>
+                               <th className="p-3" style={{ color: BRAND.colors.green }}>{rt.effectMAPColLabel}</th>
+                               <th className="p-3 w-10"></th>
+                             </tr>
+                           </thead>
+                           <tbody className="divide-y divide-slate-100">
+                             {(project.defectsMatrix || []).length === 0 && (
+                               <tr>
+                                 <td colSpan="5" className="p-6 text-center text-slate-400 italic text-sm">{rt.noDefectsAdded}</td>
+                               </tr>
+                             )}
+                             {(project.defectsMatrix || []).map(row => (
+                               <tr key={row.id} className="hover:bg-slate-50 transition-colors align-top">
+                                 <td className="p-2"><input type="text" className={`${inputClass} font-bold`} placeholder={rt.defectPlaceholder} value={row.defect || ''} onChange={e => updateDefectRow(row.id, 'defect', e.target.value)} /></td>
+                                 <td className="p-2"><input type="text" className={inputClass} placeholder={rt.causePlaceholder} value={row.cause || ''} onChange={e => updateDefectRow(row.id, 'cause', e.target.value)} /></td>
+                                 <td className="p-2"><input type="text" className={inputClass} placeholder={rt.effectMHPPlaceholder} value={row.effectMHP || ''} onChange={e => updateDefectRow(row.id, 'effectMHP', e.target.value)} /></td>
+                                 <td className="p-2"><input type="text" className={inputClass} placeholder={rt.effectMAPPlaceholder} value={row.effectMAP || ''} onChange={e => updateDefectRow(row.id, 'effectMAP', e.target.value)} /></td>
+                                 <td className="p-2 text-center">
+                                   <button onClick={() => removeDefectRow(row.id)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title={rt.removeDefectRow}>
+                                     <Trash2 size={18}/>
+                                   </button>
+                                 </td>
+                               </tr>
+                             ))}
+                           </tbody>
+                         </table>
+                       </div>
+
+                       <button onClick={addDefectRow} className="w-full py-4 mt-4 border-2 border-dashed border-green-200 bg-green-50/50 hover:bg-green-50 text-green-700 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
+                         <div className="bg-white p-1.5 rounded-lg shadow-sm"><Plus size={16} /></div>
+                         {rt.addDefectRow}
+                       </button>
                     </section>
                   </div>
                 )}
@@ -2476,6 +3052,25 @@
                               </div>
                            </div>
                         </div>
+
+                        {/* === GLOBAL EVALUATION DAYS — mirrors Proposal ===
+                         * Drives the measurement-row days for the active group.
+                         * Index-based identity (no value-shifting while typing),
+                         * sort happens only on commit-add. */}
+                        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+                           <label className="block mb-2 font-extrabold text-slate-800 text-lg">{rt.globalEvalDays}</label>
+                           <p className="text-sm text-slate-500 mb-6">{rt.evalDaysDesc}</p>
+                           <div className="flex flex-wrap gap-3 mb-6">
+                              {(groups.find(g => g.id === activeGroupId)?.measurements || []).map((m, i) => (
+                                <div key={i} className="flex gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-200 shadow-sm">
+                                  <span className="text-sm font-extrabold text-slate-600 ml-2">{rt.day}</span>
+                                  <input type="number" className="w-16 bg-white border border-slate-300 text-blue-700 text-center text-lg font-bold rounded-lg py-1 focus:ring-2 focus:ring-blue-500 outline-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]" value={m.day ?? ''} onChange={e => updateEvaluationDay(activeGroupId, i, e.target.value)} />
+                                  {i > 0 && <button onClick={() => removeEvaluationDay(activeGroupId, i)} className="text-red-400 hover:text-red-600 p-1.5 bg-white rounded-lg border shadow-sm"><X size={16}/></button>}
+                                </div>
+                              ))}
+                           </div>
+                           <button onClick={() => addEvaluationDay(activeGroupId)} className="w-full sm:w-auto text-sm bg-blue-50 text-blue-700 px-5 py-3 rounded-xl font-bold border border-blue-200 hover:bg-blue-100 transition-colors inline-flex justify-center items-center gap-2"><Plus size={18}/> {rt.addEvalDay}</button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -2499,9 +3094,14 @@
                              <>
                                <div>
                                  <h3 className="font-extrabold text-2xl mb-8 text-slate-800 border-b-2 border-slate-100 pb-4">{rt.variantConfig}</h3>
-                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
                                    <div><label className={labelClass}>{rt.variantName}</label><input type="text" className={`${inputClass} text-lg font-bold`} value={groups.find(g => g.id === activeGroupId).name || ''} onChange={(e) => handleGroupChange(activeGroupId, 'name', null, e.target.value)} /></div>
                                    <div><label className={labelClass}>{rt.packagingType}</label><select className={inputClass} value={groups.find(g => g.id === activeGroupId).specs.packaging || ''} onChange={(e) => handleGroupChange(activeGroupId, 'specs', 'packaging', e.target.value)}>{PACKAGING_TYPES.map(type => <option key={type} value={type}>{getI18nLabel(PACKAGING_TYPES_I18N, type, lang)}</option>)}</select></div>
+                                   <div><label className={labelClass}>{rt.atmosphereStrategy}</label><select className={inputClass} value={groups.find(g => g.id === activeGroupId).specs.atmosphereStrategy || 'MAP'} onChange={(e) => handleGroupChange(activeGroupId, 'specs', 'atmosphereStrategy', e.target.value)}>
+                                     <option value="MAP">{rt.optMAP}</option>
+                                     <option value="MHP">{rt.optMHP}</option>
+                                     <option value="Open">{rt.optOpen}</option>
+                                   </select></div>
                                  </div>
                                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-8 rounded-2xl border border-slate-200 shadow-sm mb-10">
                                    <label className="block mb-6 text-sm font-extrabold tracking-widest text-blue-900 uppercase border-b border-blue-200 pb-2">{rt.packagingSpecs}</label>
@@ -2550,33 +3150,43 @@
                                     <h4 className="font-extrabold text-xl text-slate-800">{rt.measurementsTitle}</h4>
                                     <button onClick={() => addMeasurementDay(activeGroupId)} className="text-sm text-white px-5 py-2 rounded-lg font-bold shadow-md hover:opacity-90 transition-opacity" style={{background: BRAND.colors.green}}>{rt.addDay}</button>
                                  </div>
+                                 {/* Atmosphere-strategy-aware measurement table:
+                                  *   - MAP variants get O₂ / CO₂ columns
+                                  *   - MHP / Open variants hide gas columns so the
+                                  *     UI only asks for what's relevant (ambient).
+                                  * The modal flow itself still works for both —
+                                  * gas-aware filtering happens at render time. */}
+                                 {(() => {
+                                   const activeGroup = groups.find(g => g.id === activeGroupId);
+                                   const isMAP = !activeGroup?.specs?.atmosphereStrategy || activeGroup.specs.atmosphereStrategy === 'MAP';
+                                   return (
                                  <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
                                    <table className="w-full text-sm min-w-[600px]">
                                      <thead className="bg-slate-100 border-b border-slate-200">
                                         <tr className="text-left text-slate-600 uppercase tracking-wider text-[10px] font-bold">
                                            <th className="p-4 w-20 text-center">{rt.thDayShort}</th>
                                            <th className="p-4">{rt.thSamples}</th>
-                                           <th className="p-4 font-bold" style={{color:BRAND.colors.blue}}>O₂ (%)</th>
-                                           <th className="p-4 font-bold" style={{color:BRAND.colors.green}}>CO₂ (%)</th>
+                                           {isMAP && <th className="p-4 font-bold" style={{color:BRAND.colors.blue}}>O₂ (%)</th>}
+                                           {isMAP && <th className="p-4 font-bold" style={{color:BRAND.colors.green}}>CO₂ (%)</th>}
                                            <th className="p-4">{rt.thWeight}</th>
                                            <th className="p-4 w-32">{rt.thQuality}</th>
                                            <th className="p-4 text-right">{rt.thActions}</th>
                                         </tr>
                                      </thead>
                                      <tbody className="divide-y divide-slate-100">
-                                       {groups.find(g => g.id === activeGroupId).measurements.map((m, idx) => {
+                                       {activeGroup.measurements.map((m, idx) => {
                                          const avgO2 = getAverage(m.samples, 'o2');
                                          const avgCO2 = getAverage(m.samples, 'co2');
                                          const avgW = getAverage(m.samples, 'weight');
                                          const hasPhotos = m.images && m.images.length > 0;
                                          const isOpened = project.totalDuration && parseFloat(m.day) > parseFloat(project.totalDuration);
-                                         
+
                                          return (
                                            <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                              <td className="p-4 text-center font-extrabold text-slate-700 bg-slate-50/50">P+{m.day}</td>
                                              <td className="p-4 text-xs font-bold text-slate-400">{m.samples?.length || 0}x</td>
-                                             <td className="p-4 font-extrabold text-blue-700">{isOpened ? '-' : `${avgO2}`}</td>
-                                             <td className="p-4 font-extrabold text-green-700">{isOpened ? '-' : `${avgCO2}`}</td>
+                                             {isMAP && <td className="p-4 font-extrabold text-blue-700">{isOpened ? '-' : `${avgO2}`}</td>}
+                                             {isMAP && <td className="p-4 font-extrabold text-green-700">{isOpened ? '-' : `${avgCO2}`}</td>}
                                              <td className="p-4 text-slate-600 font-bold">{avgW}</td>
                                              <td className="p-4">
                                                  <select className="bg-slate-50 border border-slate-200 font-bold text-slate-700 p-2 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 w-full shadow-sm" value={m.quality || ''} onChange={e => updateQuality(activeGroupId, idx, e.target.value)}>
@@ -2594,6 +3204,8 @@
                                      </tbody>
                                    </table>
                                  </div>
+                                   );
+                                 })()}
                                </div>
                              </>
                            )}
