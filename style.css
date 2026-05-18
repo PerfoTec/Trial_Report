@@ -357,8 +357,11 @@ h1, h2, h3, h4, h5, h6 {
         page-break-inside: avoid;
     }
 
-    /* Keep a heading glued to the block that follows it. */
-    h1, h2, h3, h4 {
+    /* Keep a subheading glued to the block that follows it.
+       h1/h2 excluded: chapter titles always start at the top of a
+       forced new page, so break-after: avoid is redundant there and
+       can produce blank pages when the following block is large. */
+    h3, h4 {
         break-after: avoid;
         page-break-after: avoid;
     }
