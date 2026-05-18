@@ -96,6 +96,10 @@
             closeBtn: "Close", submitBtn: "Finish & Send",
             sendingBtn: "Sending...",
             sendError: "Something went wrong. Please try again or contact PerfoTec directly.",
+            fileSizeError: "File too large. Maximum allowed size is 2MB.",
+            gdprText: "I agree that PerfoTec may process the data I submitted to prepare a test proposal.",
+            gdprLink: "Privacy Policy",
+            gdprRequired: "Please accept the privacy statement before sending.",
             removeStep: "Remove Step",
             home: "Home",
             warnCompanyName: "Warning: Please enter a company name!",
@@ -133,6 +137,10 @@
             closeBtn: "Sluiten", submitBtn: "Afronden & Verzenden",
             sendingBtn: "Verzenden...",
             sendError: "Er is iets misgegaan. Probeer het opnieuw of neem direct contact op met PerfoTec.",
+            fileSizeError: "Bestand te groot. Maximale bestandsgrootte is 2MB.",
+            gdprText: "Ik ga akkoord dat PerfoTec de ingediende gegevens mag verwerken om een testvoorstel voor te bereiden.",
+            gdprLink: "Privacyverklaring",
+            gdprRequired: "Accepteer de privacyverklaring voordat u verzendt.",
             removeStep: "Verwijder Stap",
             home: "Home",
             warnCompanyName: "Waarschuwing: Voer een bedrijfsnaam in!",
@@ -170,6 +178,10 @@
             closeBtn: "Cerrar", submitBtn: "Terminar y Enviar",
             sendingBtn: "Enviando...",
             sendError: "Algo salió mal. Inténtelo de nuevo o contacte a PerfoTec directamente.",
+            fileSizeError: "Archivo demasiado grande. El tamaño máximo permitido es 2MB.",
+            gdprText: "Acepto que PerfoTec procese los datos enviados para preparar una propuesta de prueba.",
+            gdprLink: "Política de Privacidad",
+            gdprRequired: "Acepte la política de privacidad antes de enviar.",
             removeStep: "Eliminar Paso",
             home: "Inicio",
             warnCompanyName: "¡Advertencia: Ingrese un nombre de empresa!",
@@ -488,6 +500,7 @@
           const [errors, setErrors] = useState([]);
           const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
           const [isSending, setIsSending] = useState(false);
+          const [gdprAccepted, setGdprAccepted] = useState(false);
           const [isPreview, setIsPreview] = useState(false);
           const fileInputRef = useRef(null);
 
@@ -570,6 +583,7 @@
           const handleLogoUpload = (e) => {
             const file = e.target.files[0];
             if (file) {
+              if (file.size > 2 * 1024 * 1024) { alert(t.fileSizeError); e.target.value = null; return; }
               const reader = new FileReader();
               reader.onloadend = () => handleClientChange('logo', reader.result);
               reader.readAsDataURL(file);
@@ -643,6 +657,7 @@
           const handleProductPhotoUpload = (e, id) => {
             const file = e.target.files[0];
             if (file) {
+              if (file.size > 2 * 1024 * 1024) { alert(t.fileSizeError); e.target.value = null; return; }
               const reader = new FileReader();
               reader.onloadend = () => handleProductChange(id, 'photo', reader.result);
               reader.readAsDataURL(file);
@@ -830,6 +845,8 @@
             if (e && e.preventDefault) e.preventDefault();
             if (!validateForm()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
+            if (!gdprAccepted) { alert(t.gdprRequired); return; }
+
             setIsSending(true);
 
             const normalizedClient = globalConfig.buildContactsArray
@@ -856,7 +873,9 @@
             const primaryContact = normalizedClient.contacts?.[0] || {};
 
             try {
-              const res = await fetch('https://hook.eu1.make.com/xybivi92y6ry2ia8fhc2f4mwxc8i3m7m', {
+              const webhookUrl = globalConfig.INTAKE_WEBHOOK_URL;
+              if (!webhookUrl) { alert('Configuration error: webhook URL not set in config.js.'); setIsSending(false); return; }
+              const res = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1407,8 +1426,17 @@
                   {t.addProd}
                 </button>
 
+                {/* GDPR CONSENT */}
+                <div className="flex items-start gap-3 p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                  <input type="checkbox" id="gdpr-consent" checked={gdprAccepted} onChange={e => setGdprAccepted(e.target.checked)} className="mt-0.5 w-4 h-4 shrink-0 accent-green-600 cursor-pointer" />
+                  <label htmlFor="gdpr-consent" className="text-sm text-slate-600 leading-relaxed cursor-pointer">
+                    {t.gdprText}{' '}
+                    <a href="https://www.perfotec.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 hover:text-blue-800">{t.gdprLink}</a>
+                  </label>
+                </div>
+
                 {/* FINAL SUBMIT BUTTON */}
-                <div className="pt-10 pb-20 flex justify-end">
+                <div className="pt-6 pb-20 flex justify-end">
                    <button type="button" onClick={handleSubmit} disabled={isSending} className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-60 disabled:cursor-not-allowed text-white px-10 md:px-14 py-5 rounded-full font-extrabold text-xl shadow-xl shadow-green-500/40 transition-all flex items-center gap-4 transform hover:-translate-y-1 hover:shadow-green-500/60 ring-4 ring-green-500/20">
                       {isSending ? <><svg className="animate-spin w-7 h-7" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>{t.sendingBtn}</> : <><Send size={28} />{t.submitBtn}</>}
                    </button>
