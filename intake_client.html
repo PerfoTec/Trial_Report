@@ -873,8 +873,7 @@
             const primaryContact = normalizedClient.contacts?.[0] || {};
 
             try {
-              const webhookUrl = globalConfig.INTAKE_WEBHOOK_URL;
-              if (!webhookUrl) { alert('Configuration error: webhook URL not set in config.js.'); setIsSending(false); return; }
+              const webhookUrl = globalConfig.INTAKE_WEBHOOK_URL || 'https://hook.eu1.make.com/xybivi92y6ry2ia8fhc2f4mwxc8i3m7m';
               const res = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
